@@ -1,0 +1,11 @@
+# link file
+*/lib/
+
+# executable file
+*/bin/
+
+# problem description
+*.pdf
+
+# table sheet
+*.ods
