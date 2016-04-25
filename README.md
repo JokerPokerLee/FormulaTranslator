@@ -1,4 +1,4 @@
-# A simple latex like formula translater
+# A simple latex-like formula translater
 + limited token kind
 + simplify grammar
-+ rigid output format
++ rigid output format(html absolute position)
