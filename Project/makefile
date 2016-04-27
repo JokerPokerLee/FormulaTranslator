@@ -6,16 +6,16 @@ TEXANA		=	syntax_analyzer
 SPRINT		=	html_printer
 COMMON		=	include/source.h
 
-all: bin/formula_translater
+all: bin/$(TARGET)
 
-bin/$(TARGET): lib/$(TARGET).o lib/$(LEXANA).o lib/$(SPRINT).o lib/$(TEXANA).o
+bin/$(TARGET): lib/main.o lib/$(LEXANA).o lib/$(SPRINT).o lib/$(TEXANA).o
 	@mkdir -p bin
 	@echo link all .o files
 	@$(CC) $(CFLAGS) $^ -o $@
 
-lib/$(TARGET).o: FormulaTranslater.cpp
+lib/main.o: src/main.cpp include/*
 	@mkdir -p lib
-	@echo compile $(TARGET).o
+	@echo compile main.o
 	@$(CC) $(CFLAGS) -c $< -o $@
 
 lib/$(LEXANA).o: src/$(LEXANA).cpp include/$(LEXANA).h $(COMMON)
