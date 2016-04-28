@@ -1,6 +1,6 @@
 CC			=	g++ -w -std=c++11
 CFLAGS		=	-I include
-TARGET		=	formula_translater
+TARGET		=	formula_translator
 LEXANA		=	lexical_analyzer
 TEXANA		=	syntax_analyzer
 SPRINT		=	html_printer
