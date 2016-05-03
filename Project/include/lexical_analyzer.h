@@ -7,6 +7,7 @@ struct TokenDFA {
 	int currentSta;
 	std::map<int , int> foundSta;
 	std::vector< std::map<char , int> > link;
+
 	void Init();
 	void InsertRule(int state1, int state2, char ch);
 	int Next(char ch);
@@ -19,6 +20,7 @@ private:
 	FILE* formulaInput;
 	TokenDFA autoMachine;
 	std::string formula;
+	std::ofstream debugOutStream;
 public:
 	void Init(const char* ruleInput, const char* formulaInput);
 	void BuildTokenDFA(std::string fileName);

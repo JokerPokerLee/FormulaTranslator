@@ -10,6 +10,7 @@ void Grammar::Init(const char* grammarInput, const char* mapInput) {
 	while (true) {
 		std::string currentSentence = "";
 		char ch;
+		// use the \n and EOF to seperate each derivation
 		while ((ch = fgetc(fp)) != '\n' && ch != EOF)
 			currentSentence += ch;
 		if (currentSentence.size() == 0) break;
@@ -17,6 +18,7 @@ void Grammar::Init(const char* grammarInput, const char* mapInput) {
 		derivation.resize(derivationNumber);
 		for (int i = 0; i < currentSentence.size(); i++) {
 			int code;
+			// rematch the signs with single char
 			switch (currentSentence[i]) {
 				case 'S': code = SMARK;			break;
 				case 'B': code = BMARK;			break;
@@ -43,6 +45,7 @@ void Grammar::Init(const char* grammarInput, const char* mapInput) {
 
 	std::cout << "derivation init done" << std::endl;
 
+	// to generate readable debug for grammar init
 	fp = fopen(mapInput, "r");
 	int sign;
 	char* lexname = new char[10];
@@ -51,21 +54,25 @@ void Grammar::Init(const char* grammarInput, const char* mapInput) {
 	}
 	delete lexname;
 	fclose(fp);
+
+	// output all the derivation uesd in process
+	debugOutStream.open("../output/derivation.out");
 }
 
 int Grammar::FetchSign(int k, int i) {
 	if (k >= derivationNumber || i >= derivation[k].size()) {
 		return EXCEED_DRVT;
 	}
+	if (derivation[k][i] == EMPTY) return EXCEED_DRVT;
 	return derivation[k][i];
 }
 
 void Grammar::Print(int k) {
-	std::cout << translate[derivation[k][0]] << " -> ";
+	debugOutStream << translate[derivation[k][0]] << " -> ";
 	for (int i = 1; i < derivation[k].size(); i++) {
-		std::cout << translate[derivation[k][i]];
+		debugOutStream << translate[derivation[k][i]];
 	}
-	std::cout << std::endl;
+	debugOutStream << std::endl;
 }
 
 void LLTable::Init(const char* LLTableInput) {
@@ -93,32 +100,38 @@ int LLTable::Derivate(int mark, int token) {
 void SyntaxAnalyzer::Init(const char* grammarInput, const char* mapInput, const char* LLTableInput) {
 	grammar.Init(grammarInput, mapInput);
 	table.Init(LLTableInput);
-	std::cout << "S -> $BF$" << std::endl;
-	currentNode = root = new Node(1, NULL);
+	grammar.Print(1);
+	mCurrentNode = root = new Node(1, NULL);
 }
 
 int SyntaxAnalyzer::MatchToken(int token) {
 	while (true) {
-		int sign = grammar.FetchSign(currentNode -> type, currentNode -> cursor);
+		// sign stands for the expect sign in LL derivation
+		int sign = grammar.FetchSign(mCurrentNode -> type, mCurrentNode -> matchCursor);
+		// matching process in current derivation is done
 		if (sign == EXCEED_DRVT) {
-			currentNode = currentNode -> parent;
-			if (currentNode != NULL) {
-				currentNode -> cursor++;
+			mCurrentNode = mCurrentNode -> parent;
+			if (mCurrentNode != NULL) {
+				mCurrentNode -> matchCursor++;
 				continue;
 			} else {
 				return DRVT_COMPLETE;
 			}
 		}
+		// if match, push cursor
 		if (token == sign) {
-			currentNode -> cursor++;
+			mCurrentNode -> matchCursor++;
 			return TOKEN_MATCH;
 		}
+		// if the expect sign is a non-terminal token, derivate recursively
 		if (sign >= 2000) {
 			int derivation = table.Derivate(sign, token);
+			// no match rule
 			if (derivation == NO_LL_RULE) {}
+			// used for debug
 			grammar.Print(derivation);
-			currentNode -> next.push_back(new Node(derivation, currentNode));
-			currentNode = currentNode -> next.back();
+			mCurrentNode -> next.push_back(new Node(derivation, mCurrentNode));
+			mCurrentNode = mCurrentNode -> next.back();
 		} else {
 			return MISMATCH_TOKEN;
 		}
@@ -127,7 +140,7 @@ int SyntaxAnalyzer::MatchToken(int token) {
 }
 
 void SyntaxAnalyzer::AssignLexname(std::string lexname) {
-	currentNode -> lexname = new std::string(lexname);
+	mCurrentNode -> lexname = new std::string(lexname);
 }
 
 void SyntaxAnalyzer::DetermineDepth(Node* node) {
@@ -168,7 +181,7 @@ void SyntaxAnalyzer::DetermineDepth() {
 int SyntaxAnalyzer::PrintOneScript(int pos, Node* currentNode, int nextNumber) {
 	//current info tmp
 	int currentTop = currentNode -> top;
-	int currentCursor = currentNode -> cursor;
+	int currentCursor = currentNode -> printCursor;
 	int currentSize = currentNode -> fontSize;
 
 	//next info tmp
@@ -183,8 +196,8 @@ int SyntaxAnalyzer::PrintOneScript(int pos, Node* currentNode, int nextNumber) {
 
 int SyntaxAnalyzer::PrintAllScript(Node* currentNode) {
 	int currentTop = currentNode -> top;
-	int originCursor = currentNode -> cursor;
-	int& currentCursor = currentNode -> cursor;
+	int originCursor = currentNode -> printCursor;
+	int& currentCursor = currentNode -> printCursor;
 	//print subscript
 	currentCursor = originCursor;
 	currentCursor = PrintOneScript(1, currentNode, 0);
@@ -194,7 +207,7 @@ int SyntaxAnalyzer::PrintAllScript(Node* currentNode) {
 	currentCursor = PrintOneScript(0, currentNode, 2);
 	currentCursor = PrintOneScript(0, currentNode, 3);
 	//push cursor and print suffix
-	currentCursor = std::max(currentNode -> next[1] -> cursor, currentNode -> next[3] -> cursor);
+	currentCursor = std::max(currentNode -> next[1] -> printCursor, currentNode -> next[3] -> printCursor);
 	currentNode -> next[4] -> SetPosition(currentCursor, currentTop);
 	currentCursor = PrintSentence(currentNode -> next[4]);
 	if (currentNode -> type >= 7) {
@@ -208,14 +221,14 @@ int SyntaxAnalyzer::PrintSentence(Node* currentNode) {
 	int currentTop = currentNode -> top;
 	int currentType = currentNode -> type;
 	int currentSize = currentNode -> fontSize;
-	int& currentCursor = currentNode -> cursor;
+	int& currentCursor = currentNode -> printCursor;
 	if (currentType == 3)
 		return currentCursor;
 	if (currentType >= 9 && currentType <= 11) {
 		std::string token = *(currentNode -> lexname);
 		int style = currentType == ID ? 1 : 0;
 		currentCursor = HtmlPrinter::PrintToken(currentCursor, currentTop, currentSize, style, token);
-		return currentNode -> cursor;
+		return currentNode -> printCursor;
 	}
 	int pos;
 	std::string token;
@@ -256,11 +269,11 @@ int SyntaxAnalyzer::PrintSentence(Node* currentNode) {
 			//ERROR
 			break;
 	}
-	return currentNode -> cursor;
+	return currentNode -> printCursor;
 }
 
 void SyntaxAnalyzer::Print() {
-	root -> cursor = 100;
+	root -> printCursor = 100;
 	root -> top = 300;
 	PrintSentence(root);
 }

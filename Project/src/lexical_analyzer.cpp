@@ -40,6 +40,7 @@ void LexicalAnalyzer::Init(const char* ruleInput, const char* formulaInput) {
 	formula = "";
 	BuildTokenDFA(std::string(ruleInput));
 	InitFormulaInput(std::string(formulaInput));
+	debugOutStream.open("../output/token.out");
 }
 
 void LexicalAnalyzer::BuildTokenDFA(std::string fileName) {
@@ -103,6 +104,7 @@ int LexicalAnalyzer::GetNextToken(int &token, std::string &lexname) {
 	formula += currentToken;
 	token = autoMachine.foundSta[autoMachine.currentSta];
 	lexname = currentToken;
+	debugOutStream << token << " : " << lexname << std::endl;
 	return 0;
 }
 
