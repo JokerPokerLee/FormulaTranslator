@@ -9,3 +9,6 @@
 
 # table sheet
 *.ods
+
+# debug output
+*/output/*.out

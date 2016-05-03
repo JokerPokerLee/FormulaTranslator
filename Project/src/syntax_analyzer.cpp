@@ -43,8 +43,6 @@ void Grammar::Init(const char* grammarInput, const char* mapInput) {
 	}
 	fclose(fp);
 
-	std::cout << "derivation init done" << std::endl;
-
 	// to generate readable debug for grammar init
 	fp = fopen(mapInput, "r");
 	int sign;
