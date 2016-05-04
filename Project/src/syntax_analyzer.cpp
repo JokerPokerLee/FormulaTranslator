@@ -212,8 +212,8 @@ int SyntaxAnalyzer::PrintOneScript(int pos, Node* currentNode, int nextNumber) {
 	int nextSize = currentSize - 10;
 	Node* nextNode = currentNode -> next[nextNumber];
 	// pos = 0 when solve superscript vise verse subscript pos = 1
-	int nextTop = currentTop + (nextSize - pos * currentSize * 2) * 3 / 5;
-	nextTop += pos * nextSize * 2 / 5;
+	int nextTop = currentTop - (nextSize - pos * currentSize * 2) * 3 / 5;
+	//nextTop += (pos ^ 1) * nextSize / 5;
 
 	nextNode -> SetPosition(currentCursor, nextTop);
 	return PrintSentence(nextNode);

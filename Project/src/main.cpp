@@ -35,6 +35,7 @@ int main(int argc, char* argv[]) {
 
 	std::cout << "Start printing formula." << std::endl;
 	syntaxAnalyzer.Print();
+	HtmlPrinter::Finish();
 	std::cout << "The result has been written in \"output/result.html\"." << std::endl;
 	std::cout << "Finished." << std::endl;
 	return 0;
