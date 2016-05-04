@@ -17,7 +17,7 @@ struct Grammar {
 	void Init(const char* grammarInput, const char* mapInput);
 	// return the i-th sign in k-th derivation
 	int FetchSign(int k, int i);
-	// print all the derivations for debug
+	// print k-th derivations
 	void Print(int k);
 };
 

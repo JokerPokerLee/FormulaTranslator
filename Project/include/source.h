@@ -1,6 +1,8 @@
 #ifndef _SOURCE_H_
 #define _SOURCE_H_
 
+#define DELTA_SIZE		20
+
 //[0000, 0100) succ type
 #define SUCC			0000
 #define DRVT_COMPLETE	0001

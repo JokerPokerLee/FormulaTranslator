@@ -55,12 +55,14 @@ void Grammar::Init(const char* grammarInput, const char* mapInput) {
 
 	// output all the derivation uesd in process
 	debugOutStream.open("../output/derivation.out");
+	debugOutStream << "Left most derivation:" << std::endl;
 }
 
 int Grammar::FetchSign(int k, int i) {
 	if (k >= derivationNumber || i >= derivation[k].size()) {
 		return EXCEED_DRVT;
 	}
+	// F -> emplty
 	if (derivation[k][i] == EMPTY) return EXCEED_DRVT;
 	return derivation[k][i];
 }
@@ -74,12 +76,13 @@ void Grammar::Print(int k) {
 }
 
 void LLTable::Init(const char* LLTableInput) {
+	// read in LL table
 	FILE* fp = fopen(LLTableInput, "r");
 	int mark, token, derivation;
 	while (fscanf(fp, "%d %d %d", &mark, &token, &derivation) != EOF) {
 		std::pair<int , int> mtp = std::make_pair(mark, token);
 		if (table.count(mtp) && table[mtp] != derivation) {
-			std::cout << "Collision rule in LL table." << std::endl;
+			std::cout << "Collision rules in LL table." << std::endl;
 			return;
 		}
 		table[mtp] = derivation;
@@ -87,6 +90,7 @@ void LLTable::Init(const char* LLTableInput) {
 	fclose(fp);
 }
 
+// query LL table term
 int LLTable::Derivate(int mark, int token) {
 	std::pair<int , int> mtp = std::make_pair(mark, token);
 	if (table.count(mtp)) {
@@ -98,10 +102,12 @@ int LLTable::Derivate(int mark, int token) {
 void SyntaxAnalyzer::Init(const char* grammarInput, const char* mapInput, const char* LLTableInput) {
 	grammar.Init(grammarInput, mapInput);
 	table.Init(LLTableInput);
+	// first derivation
 	grammar.Print(1);
 	mCurrentNode = root = new Node(1, NULL);
 }
 
+// read in token and decide to derivate or move on
 int SyntaxAnalyzer::MatchToken(int token) {
 	while (true) {
 		// sign stands for the expect sign in LL derivation
@@ -137,45 +143,65 @@ int SyntaxAnalyzer::MatchToken(int token) {
 	return SUCC;
 }
 
+// only leaf node can have lexname
 void SyntaxAnalyzer::AssignLexname(std::string lexname) {
+	// lexname is a pointer to string
+	// must assign a new storage area
 	mCurrentNode -> lexname = new std::string(lexname);
 }
 
+// recursive determine minimum size
 void SyntaxAnalyzer::DetermineDepth(Node* node) {
-	if (node -> lexname != NULL) {
-		node -> fontSize = 10;
-		return;
-	}
+	// default font size
+	node -> fontSize = 10;
 	for (int i = 0; i < node -> next.size(); i++) {
 		DetermineDepth(node -> next[i]);
+		// indicate whether to shrink
 		int ratio = 0;
-		if (node -> type >= 4 && node -> type <= 6)
-			ratio = 1;
-		if (node -> type >= 7 && node -> type <= 8 && i < 4)
-			ratio = 1;
-		node -> fontSize = std::max(node -> fontSize, node -> next[i] -> fontSize + 10 * ratio);
+		// have only supscript or subscript
+		if (node -> type >= 5 && node -> type <= 6)
+			ratio = i < 2;
+		// have both supscript and subscript
+		if (node -> type == 4 || node -> type >= 7 && node -> type <= 8)
+			ratio = i < 4;
+		node -> fontSize = std::max(node -> fontSize, node -> next[i] -> fontSize + DELTA_SIZE * ratio);
 	}
 }
 
+// first find the minimum
+// second adjust the minimum
+// third update descendant size from root use bfs
 void SyntaxAnalyzer::DetermineDepth() {
+	// calc least need font size of root
 	DetermineDepth(root);
+	// minimum root node font size;
+	root -> fontSize = std::max(root -> fontSize, 50);
+	// use bfs method to update descendant font size
 	std::queue<Node*> nodeQueue;
 	nodeQueue.push(root);
 	while (nodeQueue.size()) {
 		Node* now = nodeQueue.front();
 		nodeQueue.pop();
 		for (int i = 0; i < now -> next.size(); i++) {
+			// indicate whether to shrink
 			int ratio = 0;
-			if (now -> type >= 4 && now -> type <= 6)
-				ratio = 1;
-			if (now -> type >= 7 && now -> type <= 8 && i < 4)
-				ratio = 1;
-			now -> next[i] -> fontSize = now -> fontSize - 10 * ratio;
+			// have only supscript or subscript
+			if (now -> type >= 5 && now -> type <= 6)
+				ratio = i < 2;
+			// have both supscript and subscript
+			if (now -> type == 4 || now -> type >= 7 && now -> type <= 8)
+				ratio = i < 4;
+			now -> next[i] -> fontSize = now -> fontSize - DELTA_SIZE * ratio;
 			nodeQueue.push(now -> next[i]);
 		}
 	}
+
+	//check result
 }
 
+// current node has only subscript or supscript
+// pos indicate the sub(1) or the sup(0)
+// print only script
 int SyntaxAnalyzer::PrintOneScript(int pos, Node* currentNode, int nextNumber) {
 	//current info tmp
 	int currentTop = currentNode -> top;
@@ -187,11 +213,13 @@ int SyntaxAnalyzer::PrintOneScript(int pos, Node* currentNode, int nextNumber) {
 	Node* nextNode = currentNode -> next[nextNumber];
 	// pos = 0 when solve superscript vise verse subscript pos = 1
 	int nextTop = currentTop + (nextSize - pos * currentSize * 2) * 3 / 5;
+	nextTop += pos * nextSize * 2 / 5;
 
 	nextNode -> SetPosition(currentCursor, nextTop);
 	return PrintSentence(nextNode);
 }
 
+// print scripts and others
 int SyntaxAnalyzer::PrintAllScript(Node* currentNode) {
 	int currentTop = currentNode -> top;
 	int originCursor = currentNode -> printCursor;
@@ -215,16 +243,19 @@ int SyntaxAnalyzer::PrintAllScript(Node* currentNode) {
 	return currentCursor;
 }
 
+// print all kinds of formulas
 int SyntaxAnalyzer::PrintSentence(Node* currentNode) {
+	// current node info tmp
 	int currentTop = currentNode -> top;
 	int currentType = currentNode -> type;
 	int currentSize = currentNode -> fontSize;
 	int& currentCursor = currentNode -> printCursor;
-	if (currentType == 3)
-		return currentCursor;
+	// F -> empty
+	if (currentType == 3) return currentCursor;
+	// terminal tokens directly print
 	if (currentType >= 9 && currentType <= 11) {
 		std::string token = *(currentNode -> lexname);
-		int style = currentType == ID ? 1 : 0;
+		int style = currentType == 9 ? 1 : 0;
 		currentCursor = HtmlPrinter::PrintToken(currentCursor, currentTop, currentSize, style, token);
 		return currentNode -> printCursor;
 	}
@@ -270,7 +301,9 @@ int SyntaxAnalyzer::PrintSentence(Node* currentNode) {
 	return currentNode -> printCursor;
 }
 
+// outer interface
 void SyntaxAnalyzer::Print() {
+	// initialize root position
 	root -> printCursor = 100;
 	root -> top = 300;
 	PrintSentence(root);

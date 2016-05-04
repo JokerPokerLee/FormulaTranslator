@@ -33,9 +33,9 @@ int main(int argc, char* argv[]) {
 	syntaxAnalyzer.DetermineDepth();
 	std::cout << "Height calculation done." << std::endl;
 
-	// std::cout << "Start printing formula." << std::endl;
-	// syntaxAnalyzer.Print();
-	// std::cout << "The result has been written in \"output/result.html\"." << std::endl;
-	// std::cout << "Finished." << std::endl;
+	std::cout << "Start printing formula." << std::endl;
+	syntaxAnalyzer.Print();
+	std::cout << "The result has been written in \"output/result.html\"." << std::endl;
+	std::cout << "Finished." << std::endl;
 	return 0;
 }
