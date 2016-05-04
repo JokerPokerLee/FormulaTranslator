@@ -125,13 +125,15 @@ int SyntaxAnalyzer::MatchToken(int token) {
 		// if match, push cursor
 		if (token == sign) {
 			mCurrentNode -> matchCursor++;
-			return TOKEN_MATCH;
+			return SUCC;
 		}
 		// if the expect sign is a non-terminal token, derivate recursively
 		if (sign >= 2000) {
 			int derivation = table.Derivate(sign, token);
 			// no match rule
-			if (derivation == NO_LL_RULE) {}
+			if (derivation == NO_LL_RULE) {
+				return MISMATCH_TOKEN;
+			}
 			// used for debug
 			grammar.Print(derivation);
 			mCurrentNode -> next.push_back(new Node(derivation, mCurrentNode));

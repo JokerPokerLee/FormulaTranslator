@@ -18,12 +18,18 @@ int main(int argc, char* argv[]) {
 	int token;
 	std::string lexname;
 	int cnt = 0;
+	bool errorDetected = false;
 	while (cnt < 2 && !lexicalAnalyzer.GetNextToken(token, lexname)) {
 		int rtn;
 		rtn = syntaxAnalyzer.MatchToken(token);
+		if (rtn != SUCC) errorDetected = true;
 		if (token == ID || token == NUMBER || token == BLANK)
 			syntaxAnalyzer.AssignLexname(token != BLANK ? lexname : std::string(" "));
 		cnt += token == DOLLAR;
+	}
+	if (errorDetected) {
+		std::cout << "Derivation terminated with error(s)." << std::endl;
+		return 0;
 	}
 	std::cout << "The tokens read in have been recorded in \"output/token.out\"." << std::endl;
 	std::cout << "The derivations used have been recorded in \"output/derivation.out\"." << std::endl;
