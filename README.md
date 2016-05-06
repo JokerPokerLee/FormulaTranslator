@@ -3,4 +3,7 @@
 + simplify grammar
 + rigid output format(html absolute position)
 
-'bash run.sh' run the make command and the executable file
+```bash
+bash run.sh
+```
+run the make command and the executable file
