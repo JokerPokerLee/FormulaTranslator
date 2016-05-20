@@ -3,6 +3,9 @@
 #include "html_printer.h"
 #include "syntax_analyzer.h"
 
+static std::string leftCurly = std::string("(");
+static std::string rightCurly = std::string(")");
+
 void Grammar::Init(const char* grammarInput, const char* mapInput) {
 	derivationNumber = 0;
 	derivation.clear();
@@ -258,10 +261,10 @@ int SyntaxAnalyzer::PrintSentence(Node* currentNode) {
 	if (currentType >= 9 && currentType <= 11) {
 		std::string token = *(currentNode -> lexname);
 		int style = currentType == 9 ? 1 : 0;
-		currentCursor = HtmlPrinter::PrintToken(currentCursor, currentTop, currentSize, style, token);
+		currentCursor = HtmlPrinter::PrintToken(currentCursor, currentTop, currentSize, style, token, token.size());
 		return currentNode -> printCursor;
 	}
-	int pos;
+	int pos, delta;
 	std::string token;
 	switch (currentNode -> type) {
 		case 1:
@@ -284,17 +287,24 @@ int SyntaxAnalyzer::PrintSentence(Node* currentNode) {
 			break;
 		case 7:
 		case 8:
-			token = (currentNode -> type & 1) ? "∫" : "∑";
-			currentCursor = HtmlPrinter::PrintToken(currentCursor, currentTop, currentSize, 0, token);
+			if (currentNode -> type & 1) {
+				token = "∫";
+				delta = 15;
+			} else {
+				token = "∑";
+				delta = 5;
+			}
+			// token = (currentNode -> type & 1) ? "∫" : "∑";
+			currentCursor = HtmlPrinter::PrintToken(currentCursor, currentTop - delta * 4 / 5, currentSize + delta, 0, token, 1);
 			currentCursor = PrintAllScript(currentNode);
 			break;
 		case 12:
-			currentCursor = HtmlPrinter::PrintToken(currentCursor, currentTop, currentSize, 0, std::string("("));
+			currentCursor = HtmlPrinter::PrintToken(currentCursor, currentTop, currentSize, 0, leftCurly, 1);
 			for (int i = 0; i < currentNode -> next.size(); i++) {
 				currentNode -> next[i] -> SetPosition(currentCursor, currentTop);
 				currentCursor = PrintSentence(currentNode -> next[i]);
 			}
-			currentCursor = HtmlPrinter::PrintToken(currentCursor, currentTop, currentSize, 0, std::string(")"));
+			currentCursor = HtmlPrinter::PrintToken(currentCursor, currentTop, currentSize, 0, rightCurly, 1);
 			break;
 		default:
 			//ERROR

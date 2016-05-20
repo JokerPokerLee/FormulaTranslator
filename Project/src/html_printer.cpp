@@ -11,11 +11,11 @@ void HtmlPrinter::Init(const char* formulaOutput) {
 	fprintf(htmlOutputFile, "\t</head>\n\t<body>\n");
 }
 
-int HtmlPrinter::PrintToken(int left, int top, int fontSize, int fontStyle, std::string token) {
+int HtmlPrinter::PrintToken(int left, int top, int fontSize, int fontStyle, std::string& token, int len) {
 	fprintf(htmlOutputFile, "\t\t<div style=\"position: absolute; left:%dpx; top:%dpx;\">\n", left, top);
 	fprintf(htmlOutputFile, "\t\t\t<span style=\"font-family:monospace; font-size:%dpx; font-style:%s; line-height:100%%;\">", fontSize, fontStyle ? "oblique" : "normal");
 	fprintf(htmlOutputFile, "%s</span>\n\t\t</div>\n", token.c_str());
-	return left + token.size() * fontSize * 3 / 5;
+	return left + len * fontSize * 3 / 5;
 }
 
 void HtmlPrinter::Finish() {

@@ -7,7 +7,7 @@ private:
 public:
 	static void Init(const char* formulaOutput);
 	//fontStyle = 0 when wants normal
-	static int PrintToken(int left, int top, int fontSize, int fontStyle, std::string token);
+	static int PrintToken(int left, int top, int fontSize, int fontStyle, std::string& token, int len);
 	static void Finish();
 };
 
