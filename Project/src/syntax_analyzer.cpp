@@ -158,7 +158,7 @@ void SyntaxAnalyzer::AssignLexname(std::string lexname) {
 // recursive determine minimum size
 void SyntaxAnalyzer::DetermineDepth(Node* node) {
 	// default font size
-	node -> fontSize = 10;
+	node -> fontSize = MINIMUM_SIZE;
 	for (int i = 0; i < node -> next.size(); i++) {
 		DetermineDepth(node -> next[i]);
 		// indicate whether to shrink
@@ -169,7 +169,7 @@ void SyntaxAnalyzer::DetermineDepth(Node* node) {
 		// have both supscript and subscript
 		if (node -> type == 4 || node -> type >= 7 && node -> type <= 8)
 			ratio = i < 4;
-		node -> fontSize = std::max(node -> fontSize, node -> next[i] -> fontSize + DELTA_SIZE * ratio);
+		node -> fontSize = std::max(node -> fontSize, node -> next[i] -> fontSize * (ratio + 1));
 	}
 }
 
@@ -180,7 +180,7 @@ void SyntaxAnalyzer::DetermineDepth() {
 	// calc least need font size of root
 	DetermineDepth(root);
 	// minimum root node font size;
-	root -> fontSize = std::max(root -> fontSize, 50);
+	root -> fontSize = std::max(root -> fontSize, MINIMUM_ROOT);
 	// use bfs method to update descendant font size
 	std::queue<Node*> nodeQueue;
 	nodeQueue.push(root);
@@ -196,7 +196,7 @@ void SyntaxAnalyzer::DetermineDepth() {
 			// have both supscript and subscript
 			if (now -> type == 4 || now -> type >= 7 && now -> type <= 8)
 				ratio = i < 4;
-			now -> next[i] -> fontSize = now -> fontSize - DELTA_SIZE * ratio;
+			now -> next[i] -> fontSize = now -> fontSize / (ratio + 1);
 			nodeQueue.push(now -> next[i]);
 		}
 	}
@@ -214,10 +214,11 @@ int SyntaxAnalyzer::PrintOneScript(int pos, Node* currentNode, int nextNumber) {
 	int currentSize = currentNode -> fontSize;
 
 	//next info tmp
-	int nextSize = currentSize - 10;
+	int nextSize = currentSize / 2;
 	Node* nextNode = currentNode -> next[nextNumber];
 	// pos = 0 when solve superscript vise verse subscript pos = 1
-	int nextTop = currentTop - (nextSize - pos * currentSize * 2) * 3 / 5;
+	int nextTop = currentTop + pos * (currentSize - nextSize);
+	nextTop += pos ? (nextSize / 5) : -(nextSize / 2);
 	//nextTop += (pos ^ 1) * nextSize / 5;
 
 	nextNode -> SetPosition(currentCursor, nextTop);
@@ -289,9 +290,9 @@ int SyntaxAnalyzer::PrintSentence(Node* currentNode) {
 		case 8:
 			if (currentNode -> type & 1) {
 				token = "∫";
-				delta = 15;
+				delta = 5;
 			} else {
-				token = "∑";
+				token = "Σ";
 				delta = 5;
 			}
 			// token = (currentNode -> type & 1) ? "∫" : "∑";

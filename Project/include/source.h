@@ -1,7 +1,8 @@
 #ifndef _SOURCE_H_
 #define _SOURCE_H_
 
-#define DELTA_SIZE		20
+#define MINIMUM_SIZE	5
+#define MINIMUM_ROOT	40
 
 //[0000, 0100) succ type
 #define SUCC			0000
