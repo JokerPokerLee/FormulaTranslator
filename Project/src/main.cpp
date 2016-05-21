@@ -14,7 +14,7 @@ int main(int argc, char* argv[]) {
 	syntaxAnalyzer.Init("../input/sentence.in", "../input/map.in", "../input/LLTable.in");
 	std::cout << "Init done." << std::endl;
 
-	std::cout << "Start derivating." << std::endl;
+	std::cout << "Start derivating." << std::endl << std::endl;
 	int token;
 	std::string lexname;
 	int cnt = 0;
@@ -26,18 +26,20 @@ int main(int argc, char* argv[]) {
 		if (token == ID || token == NUMBER || token == BLANK)
 			syntaxAnalyzer.AssignLexname(token != BLANK ? lexname : std::string(" "));
 		cnt += token == DOLLAR;
+		std::cout << ".";
 	}
+	std::cout << std::endl << std::endl;
 	if (errorDetected) {
 		std::cout << "Derivation terminated with error(s)." << std::endl;
 		return 0;
 	}
 	std::cout << "The tokens read in have been recorded in \"output/token.out\"." << std::endl;
 	std::cout << "The derivations used have been recorded in \"output/derivation.out\"." << std::endl;
-	std::cout << "Derivation done." << std::endl;
+	std::cout << "Derivation done." << std::endl << std::endl;
 
 	std::cout << "Start calc the height of the grammar tree." << std::endl;
 	syntaxAnalyzer.DetermineDepth();
-	std::cout << "Height calculation done." << std::endl;
+	std::cout << "Height calculation done." << std::endl << std::endl;
 
 	std::cout << "Start printing formula." << std::endl;
 	syntaxAnalyzer.Print();
