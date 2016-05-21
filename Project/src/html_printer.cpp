@@ -7,7 +7,7 @@ void HtmlPrinter::Init(const char* formulaOutput) {
 	htmlOutputFile = fopen(formulaOutput, "w");
 	fprintf(htmlOutputFile, "<html>\n");
 	fprintf(htmlOutputFile, "\t<head>\n");
-	fprintf(htmlOutputFile, "\t\t<META content=\"text/html; charset=gb2312\">\n");
+	fprintf(htmlOutputFile, "\t\t<meta http-equiv=\"Content-type\" content=\"text/html; charset=utf-8\" />\n");
 	fprintf(htmlOutputFile, "\t</head>\n\t<body>\n");
 }
 
