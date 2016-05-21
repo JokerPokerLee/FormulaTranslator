@@ -7,12 +7,13 @@
 //[0000, 0100) succ type
 #define SUCC			0000
 #define DRVT_COMPLETE	0001
-#define TOKEN_MATCH		0002
 
 //[0100, 1000) error type
 #define EXCEED_DRVT		0100
 #define NO_LL_RULE		0101
 #define MISMATCH_TOKEN	0102
+#define INVALID_TOKEN	0103
+#define END_OF_FILE		0104
 
 //[1000, 2000) token name
 #define INTEGRITY 		1000

@@ -1,5 +1,6 @@
 #include <bits/stdc++.h>
 #include "source.h"
+#include "error_reporter.h"
 #include "lexical_analyzer.h"
 
 void TokenDFA::Init() {
@@ -22,9 +23,13 @@ void TokenDFA::InsertRule(int state1, int state2, char ch) {
 int TokenDFA::Next(char ch) {
 	if (link[currentSta].count(ch)) {
 		currentSta = link[currentSta][ch];
-		return 0;
+		return SUCC;
 	}
-	return -1;
+	return INVALID_TOKEN;
+}
+
+bool TokenDFA::FoundToken() {
+	return foundSta.count(currentSta);
 }
 
 void TokenDFA::Print() {
@@ -44,10 +49,12 @@ void LexicalAnalyzer::Init(const char* ruleInput, const char* formulaInput) {
 }
 
 void LexicalAnalyzer::BuildTokenDFA(std::string fileName) {
-	for (int i = 0; i < 13; i++) {
-		autoMachine.foundSta[i] = 1000 + i;
-	}
 	ruleInput = fopen(fileName.c_str(), "r");
+	for (int i = 0; i < 13; i++) {
+		int state;
+		fscanf(ruleInput, "%d", &state);
+		autoMachine.foundSta[state] = 1000 + i;
+	}
 	fscanf(ruleInput, "%d", &autoMachine.startSta);
 	int state1, state2;
 	char ch;
@@ -79,33 +86,56 @@ void LexicalAnalyzer::InitFormulaInput(std::string fileName) {
 }
 
 int LexicalAnalyzer::GetNextToken(int &token, std::string &lexname) {
+	// every time start from the origin state
 	autoMachine.currentSta = autoMachine.startSta;
+
+	// keep trying to walk along the dfa
+	// if reach the end of file, then break
+	// if reach a sta contain valid token, then break
 	std::string currentToken = "";
-	bool error = false;
-	while (!autoMachine.foundSta.count(autoMachine.currentSta)) {
-		char ch;
-		ch = (char)getc(formulaInput);
-		if (currentToken.size() || ch != ' ' && ch != '\n') {
+	while (!feof(formulaInput) && !autoMachine.FoundToken()) {
+		char ch = (char)getc(formulaInput);
+		if (ch != ' ' && ch != '\n') {
 			currentToken += ch;
 		}
-		if (autoMachine.Next(ch)) {
-			error = true;
+		if (autoMachine.Next(ch) == INVALID_TOKEN) {
 			break;
 		}
+		// special judge ALLSCRIPT
+		if (!feof(formulaInput) && autoMachine.currentSta == 26) {
+			ch = (char)getc(formulaInput);
+			if (autoMachine.Next(ch) == INVALID_TOKEN) {
+				fseek(formulaInput, -1, SEEK_CUR);
+				break;
+			}
+			currentToken += ch;
+		}
 	}
-	if (error) {
-		std::cout << "Invalid string." << std::endl;
-		return -1;
+
+	// if no characters read in, then it reach the end of the file
+	if (currentToken.empty()) {
+		return END_OF_FILE;
 	}
-	if (autoMachine.currentSta < 6 || autoMachine.currentSta == 10 || autoMachine.currentSta == 11) {
-		fseek(formulaInput, -1, SEEK_CUR);
-		currentToken.pop_back();
+
+	if (autoMachine.FoundToken()) {		// found a token
+		formula += currentToken;
+		token = autoMachine.foundSta[autoMachine.currentSta];
+		lexname = currentToken;
+		// record for debug
+		debugOutStream << token << " : " << lexname << std::endl;
+		return SUCC;
+	} else {							// invalid char OR!!! EOF
+		while (!feof(formulaInput)) {
+			char ch = (char)getc(formulaInput);
+			if (autoMachine.link[autoMachine.startSta].count(ch)) {
+				fseek(formulaInput, -1, SEEK_CUR);
+				break;
+			}
+			currentToken += ch;
+		}
+		ErrorReporter::Error(formula, currentToken);
+		return INVALID_TOKEN;
 	}
-	formula += currentToken;
-	token = autoMachine.foundSta[autoMachine.currentSta];
-	lexname = currentToken;
-	debugOutStream << token << " : " << lexname << std::endl;
-	return 0;
 }
 
 void LexicalAnalyzer::PrintTokenDFA() {
