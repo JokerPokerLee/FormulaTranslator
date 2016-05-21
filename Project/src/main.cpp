@@ -6,35 +6,54 @@
 
 int main(int argc, char* argv[]) {
 
-	std::cout << "Start initializing lexical analyzer and syntax analyzer." << std::endl;
-	SyntaxAnalyzer syntaxAnalyzer;
+	std::cout << "Start initializing lexical analyzer." << std::endl;
 	LexicalAnalyzer lexicalAnalyzer;
-	HtmlPrinter::Init("../output/result.html");
 	lexicalAnalyzer.Init("../input/rule.in", "../input/formula.in");
+	std::cout << "Lexical analyzer initialization done.\n" << std::endl;
+
+	std::cout << "Start initializing syntax analyzer." << std::endl;
+	SyntaxAnalyzer syntaxAnalyzer;
 	syntaxAnalyzer.Init("../input/sentence.in", "../input/map.in", "../input/LLTable.in");
-	std::cout << "Init done." << std::endl;
+	std::cout << "Syntax analyzer initialization done.\n" << std::endl;
+
+	std::cout << "Start initializing html printer." << std::endl;
+	HtmlPrinter::Init("../output/result.html");
+	std::cout << "Html printer initialization donw.\n" << std::endl;
 
 	std::cout << "Start derivating." << std::endl << std::endl;
 	int token;
 	std::string lexname;
 	int cnt = 0;
-	bool errorDetected = false;
-	while (cnt < 2 && !lexicalAnalyzer.GetNextToken(token, lexname)) {
+	bool lexicalError = false;
+	bool syntaxError = false;
+	while (cnt < 2) {
 		int rtn;
+		rtn = lexicalAnalyzer.GetNextToken(token, lexname);
+		if (rtn == END_OF_FILE) {
+			break;
+		}
+		if (rtn == INVALID_TOKEN) {
+			lexicalError = true;
+			continue;
+		}
 		rtn = syntaxAnalyzer.MatchToken(token);
-		if (rtn != SUCC) errorDetected = true;
 		if (token == ID || token == NUMBER || token == BLANK)
 			syntaxAnalyzer.AssignLexname(token != BLANK ? lexname : std::string(" "));
 		cnt += token == DOLLAR;
-		std::cout << ".";
-	}
-	std::cout << std::endl << std::endl;
-	if (errorDetected) {
-		std::cout << "Derivation terminated with error(s)." << std::endl;
-		return 0;
 	}
 	std::cout << "The tokens read in have been recorded in \"output/token.out\"." << std::endl;
-	std::cout << "The derivations used have been recorded in \"output/derivation.out\"." << std::endl;
+	std::cout << "The derivations used have been recorded in \"output/derivation.out\".\n" << std::endl;
+
+	if (cnt < 2) {
+		std::cout << "syntax_analyzer:\terror" << ": ";
+		std::cout << "The formula is incomplete." << std::endl;
+		syntaxError = true;
+	}
+	if (lexicalError || syntaxError) {
+		std::cout << "Derivation terminated with error(s).\n" << std::endl;
+		return 0;
+	}
+
 	std::cout << "Derivation done." << std::endl << std::endl;
 
 	std::cout << "Start calc the height of the grammar tree." << std::endl;
