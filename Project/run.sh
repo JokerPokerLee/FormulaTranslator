@@ -1,12 +1,12 @@
 echo
 echo "********************Start Sompile*********************"
 echo
-res=$(make all)
+make -s all
 if [[ $? == 0 ]]; then
-	if [[ $res == *"Nothing to be done"* ]]; then
-		echo "All files are up to date."
+	if [ ! -f ./.compile_acted ]; then
+		echo All files are up-to-date.
 	else
-		echo $res
+		rm -f ./.compile_acted
 	fi
 	echo
 	echo "*******************Compile Complete*******************"
@@ -14,7 +14,6 @@ if [[ $? == 0 ]]; then
 	cd bin 
 	./formula_translator
 else
-	echo $res
 	echo
 	echo "***********Compile terminated with error(s)***********"
 	echo
