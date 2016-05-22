@@ -1,37 +1,8 @@
 #ifndef _SYNTAX_ANALYZER_
 #define _SYNTAX_ANALYZER_
 
-struct Grammar {
-	// the number of the derivation
-	int derivationNumber;
-	// store the derivation sign by sign
-	// the first sign is the left value
-	std::vector< std::vector<int> > derivation;
-	// used for restore the derivation from token string
-	std::map<int , std::string> translate;
-	// debug output stream
-	std::ofstream debugOutStream;
-
-	// read in the derivation from grammarInput
-	// read in the token-lex map
-	void Init(const char* grammarInput, const char* mapInput);
-	// return the i-th sign in k-th derivation
-	int FetchSign(int k, int i);
-	// print k-th derivations
-	void Print(int k);
-};
-
-struct LLTable {
-	// given mark-token pair and return action
-	std::map<std::pair<int , int>, int> table;
-
-	// build the table from LLTableInput
-	// LLTableInput contains several line of the format:
-	// mark token action
-	void Init(const char* LLTableInput);
-	// given mark-token pair and return action
-	int Derivate(int mark, int token);
-};
+#include "grammar.h"
+#include "LLTable.h"
 
 struct Node {
 	// the derivation this node correspond

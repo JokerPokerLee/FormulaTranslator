@@ -91,7 +91,7 @@ int LexicalAnalyzer::GetNextToken(int &token, std::string &lexname) {
 
 	// keep trying to walk along the dfa
 	// if reach the end of file, then break
-	// if reach a sta contain valid token, then break
+	// if reach a sta containing valid token, then break
 	std::string currentToken = "";
 	while (!feof(formulaInput) && !autoMachine.FoundToken()) {
 		char ch = (char)getc(formulaInput);
@@ -104,6 +104,9 @@ int LexicalAnalyzer::GetNextToken(int &token, std::string &lexname) {
 		// special judge ALLSCRIPT
 		if (!feof(formulaInput) && autoMachine.currentSta == 26) {
 			ch = (char)getc(formulaInput);
+			// move backward the file pointer to guarantee
+			// that file pointer always point to the next
+			// character not proceeded
 			if (autoMachine.Next(ch) == INVALID_TOKEN) {
 				fseek(formulaInput, -1, SEEK_CUR);
 				break;

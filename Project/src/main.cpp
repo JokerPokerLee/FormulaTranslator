@@ -1,4 +1,5 @@
 #include <bits/stdc++.h>
+#include <unistd.h>
 #include "source.h"
 #include "lexical_analyzer.h"
 #include "syntax_analyzer.h"
@@ -9,18 +10,27 @@ int main(int argc, char* argv[]) {
 	std::cout << "Start initializing lexical analyzer." << std::endl;
 	LexicalAnalyzer lexicalAnalyzer;
 	lexicalAnalyzer.Init("../input/rule.in", "../input/formula.in");
-	std::cout << "Lexical analyzer initialization done.\n" << std::endl;
+	sleep(1);
+	std::cout << "Lexical analyzer initialization complete.\n" << std::endl;
+	sleep(1);
 
 	std::cout << "Start initializing syntax analyzer." << std::endl;
 	SyntaxAnalyzer syntaxAnalyzer;
 	syntaxAnalyzer.Init("../input/sentence.in", "../input/map.in", "../input/LLTable.in");
-	std::cout << "Syntax analyzer initialization done.\n" << std::endl;
+	sleep(1);
+	std::cout << "Syntax analyzer initialization complete.\n" << std::endl;
+	sleep(1);
 
 	std::cout << "Start initializing html printer." << std::endl;
 	HtmlPrinter::Init("../output/result.html");
-	std::cout << "Html printer initialization donw.\n" << std::endl;
+	sleep(1);
+	std::cout << "Html printer initialization complete.\n" << std::endl;
+
+	std::cout << "The tokens read in will be recorded in \"output/token.out\"." << std::endl;
+	std::cout << "The derivations used will be recorded in \"output/derivation.out\".\n" << std::endl;
 
 	std::cout << "Start derivating." << std::endl << std::endl;
+	sleep(1);
 	int token;
 	std::string lexname;
 	int cnt = 0;
@@ -37,12 +47,14 @@ int main(int argc, char* argv[]) {
 			continue;
 		}
 		rtn = syntaxAnalyzer.MatchToken(token);
-		if (token == ID || token == NUMBER || token == BLANK)
-			syntaxAnalyzer.AssignLexname(token != BLANK ? lexname : std::string(" "));
+		if (rtn == SUCC) {
+			if (token == ID || token == NUMBER || token == BLANK)
+				syntaxAnalyzer.AssignLexname(token != BLANK ? lexname : std::string(" "));
+		} else {
+			syntaxError = false;
+		}
 		cnt += token == DOLLAR;
 	}
-	std::cout << "The tokens read in have been recorded in \"output/token.out\"." << std::endl;
-	std::cout << "The derivations used have been recorded in \"output/derivation.out\".\n" << std::endl;
 
 	if (cnt < 2) {
 		std::cout << "syntax_analyzer:\terror" << ": ";
@@ -54,16 +66,21 @@ int main(int argc, char* argv[]) {
 		return 0;
 	}
 
-	std::cout << "Derivation done." << std::endl << std::endl;
+	std::cout << "Derivation completed." << std::endl << std::endl;
+	sleep(1);
 
 	std::cout << "Start calc the height of the grammar tree." << std::endl;
 	syntaxAnalyzer.DetermineDepth();
-	std::cout << "Height calculation done." << std::endl << std::endl;
+	sleep(1);
+	std::cout << "Height calculation complete.\n" << std::endl;
+	sleep(1);
 
 	std::cout << "Start printing formula." << std::endl;
 	syntaxAnalyzer.Print();
 	HtmlPrinter::Finish();
-	std::cout << "The result has been written in \"output/result.html\"." << std::endl;
-	std::cout << "Finished." << std::endl;
+	sleep(1);
+	std::cout << "The result has been written in \"output/result.html\".\n" << std::endl;
+
+	std::cout << "Formula translation complete." << std::endl;
 	return 0;
 }

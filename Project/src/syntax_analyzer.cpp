@@ -1,106 +1,12 @@
 #include <bits/stdc++.h>
 #include "source.h"
+#include "grammar.h"
+#include "LLTable.h"
 #include "html_printer.h"
 #include "syntax_analyzer.h"
 
 static std::string leftCurly = std::string("(");
 static std::string rightCurly = std::string(")");
-
-void Grammar::Init(const char* grammarInput, const char* mapInput) {
-	derivationNumber = 0;
-	derivation.clear();
-	FILE* fp = fopen(grammarInput, "r");
-	while (true) {
-		std::string currentSentence = "";
-		char ch;
-		// use the \n and EOF to seperate each derivation
-		while ((ch = fgetc(fp)) != '\n' && ch != EOF)
-			currentSentence += ch;
-		if (currentSentence.size() == 0) break;
-		derivationNumber++;
-		derivation.resize(derivationNumber);
-		for (int i = 0; i < currentSentence.size(); i++) {
-			int code;
-			// rematch the signs with single char
-			switch (currentSentence[i]) {
-				case 'S': code = SMARK;			break;
-				case 'B': code = BMARK;			break;
-				case 'F': code = FMARK;			break;
-				case '$': code = DOLLAR;		break;
-				case '&': code = ALLSCRIPT;		break;
-				case '^': code = SUPERSCRIPT;	break;
-				case '_': code = SUBSCRIPT;		break;
-				case 'i': code = INTEGRITY;		break;
-				case 's': code = SIGMA;			break;
-				case 'd': code = ID;			break;
-				case 'n': code = NUMBER;		break;
-				case 'b': code = BLANK;			break;
-				case '(': code = LEFTBRACKET;	break;
-				case ')': code = RIGHTBRACKET;	break;
-				case '{': code = LEFTCURLY;		break;
-				case '}': code = RIGHTCURLY;	break;
-				case 'e': code = EMPTY;			break;
-			}
-			derivation.back().push_back(code);
-		}
-	}
-	fclose(fp);
-
-	// to generate readable debug for grammar init
-	fp = fopen(mapInput, "r");
-	int sign;
-	char* lexname = new char[10];
-	while (fscanf(fp, "%d %s", &sign, lexname) != EOF) {
-		translate[sign] = std::string(lexname);
-	}
-	delete lexname;
-	fclose(fp);
-
-	// output all the derivation uesd in process
-	debugOutStream.open("../output/derivation.out");
-	debugOutStream << "Left most derivation:" << std::endl;
-}
-
-int Grammar::FetchSign(int k, int i) {
-	if (k >= derivationNumber || i >= derivation[k].size()) {
-		return EXCEED_DRVT;
-	}
-	// F -> emplty
-	if (derivation[k][i] == EMPTY) return EXCEED_DRVT;
-	return derivation[k][i];
-}
-
-void Grammar::Print(int k) {
-	debugOutStream << translate[derivation[k][0]] << " -> ";
-	for (int i = 1; i < derivation[k].size(); i++) {
-		debugOutStream << translate[derivation[k][i]];
-	}
-	debugOutStream << std::endl;
-}
-
-void LLTable::Init(const char* LLTableInput) {
-	// read in LL table
-	FILE* fp = fopen(LLTableInput, "r");
-	int mark, token, derivation;
-	while (fscanf(fp, "%d %d %d", &mark, &token, &derivation) != EOF) {
-		std::pair<int , int> mtp = std::make_pair(mark, token);
-		if (table.count(mtp) && table[mtp] != derivation) {
-			std::cout << "Collision rules in LL table." << std::endl;
-			return;
-		}
-		table[mtp] = derivation;
-	}
-	fclose(fp);
-}
-
-// query LL table term
-int LLTable::Derivate(int mark, int token) {
-	std::pair<int , int> mtp = std::make_pair(mark, token);
-	if (table.count(mtp)) {
-		return table[mtp];
-	}
-	return NO_LL_RULE;
-}
 
 void SyntaxAnalyzer::Init(const char* grammarInput, const char* mapInput, const char* LLTableInput) {
 	grammar.Init(grammarInput, mapInput);
