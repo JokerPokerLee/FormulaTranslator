@@ -1,7 +1,8 @@
 #ifndef _HTML_PRINTER_
 #define _HTML_PRINTER_
 
-#define FONT_FAMILY "Anonymous"
+// #define FONT_FAMILY "Anonymous"
+#define FONT_FAMILY "Monaco"
 
 class HtmlPrinter {
 private:
