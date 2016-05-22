@@ -1,7 +1,7 @@
 #ifndef _HTML_PRINTER_
 #define _HTML_PRINTER_
 
-#define FONT_FAMILY "DejaVu Sans Mono"
+#define FONT_FAMILY "Anonymous"
 
 class HtmlPrinter {
 private:
