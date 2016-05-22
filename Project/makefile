@@ -9,7 +9,7 @@ COMMON		=	include/source.h
 
 all: bin/$(TARGET)
 
-bin/$(TARGET): lib/main.o lib/$(SERROR).o lib/$(LEXANA).o lib/$(SPRINT).o lib/$(TEXANA).o
+bin/$(TARGET): lib/main.o lib/$(SERROR).o lib/$(LEXANA).o lib/$(SPRINT).o lib/$(TEXANA).o lib/grammar.o lib/LLTable.o
 	@mkdir -p bin
 	@echo link all .o files
 	@echo 1 > .compile_acted
@@ -35,9 +35,19 @@ lib/$(SPRINT).o: src/$(SPRINT).cpp include/$(SPRINT).h
 	@echo compile $(SPRINT).o
 	@$(CC) $(CFLAGS) -c $< -o $@
 
-lib/$(TEXANA).o: src/$(TEXANA).cpp include/$(TEXANA).h include/$(SPRINT).h $(COMMON)
+lib/$(TEXANA).o: src/$(TEXANA).cpp include/$(TEXANA).h include/$(SPRINT).h include/grammar.h include/LLTable.h $(COMMON)
 	@mkdir -p lib
 	@echo compile $(TEXANA).o
+	@$(CC) $(CFLAGS) -c $< -o $@
+
+lib/grammar.o: src/grammar.cpp include/grammar.h
+	@mkdir -p lib
+	@echo compile grammar.o
+	@$(CC) $(CFLAGS) -c $< -o $@
+
+lib/LLTable.o: src/LLTable.cpp include/LLTable.h
+	@mkdir -p lib
+	@echo compile LLTable.o
 	@$(CC) $(CFLAGS) -c $< -o $@
 
 .PHONY: clean
