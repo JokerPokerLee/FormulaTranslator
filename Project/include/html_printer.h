@@ -1,6 +1,8 @@
 #ifndef _HTML_PRINTER_
 #define _HTML_PRINTER_
 
+#define FONT_FAMILY "DejaVu Sans Mono"
+
 class HtmlPrinter {
 private:
 	static FILE* htmlOutputFile;
