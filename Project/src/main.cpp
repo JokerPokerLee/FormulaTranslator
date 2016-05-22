@@ -33,34 +33,38 @@ int main(int argc, char* argv[]) {
 	sleep(1);
 	int token;
 	std::string lexname;
-	int cnt = 0;
 	bool lexicalError = false;
 	bool syntaxError = false;
-	while (cnt < 2) {
+	while (true) {
+		// return value
 		int rtn;
+
+		// fetch another token
 		rtn = lexicalAnalyzer.GetNextToken(token, lexname);
+		// if cannot fetch another token
+		// the derivation must be incomplete at that time
+		// otherwise it would have breaked
+		// so there's only one possibility that the formula is incomplete
 		if (rtn == END_OF_FILE) {
+			std::cout << "lexical_analyzer:\terror" << ": ";
+			std::cout << "The formula is incomplete." << std::endl;
 			break;
 		}
 		if (rtn == INVALID_TOKEN) {
 			lexicalError = true;
 			continue;
 		}
+
 		rtn = syntaxAnalyzer.MatchToken(token);
+		if (rtn == DRVT_COMPLETE) {
+			break;
+		}
 		if (rtn == SUCC) {
 			if (token == ID || token == NUMBER || token == BLANK)
 				syntaxAnalyzer.AssignLexname(token != BLANK ? lexname : std::string(" "));
-		} else {
-			syntaxError = false;
 		}
-		cnt += token == DOLLAR;
 	}
 
-	if (cnt < 2) {
-		std::cout << "syntax_analyzer:\terror" << ": ";
-		std::cout << "The formula is incomplete." << std::endl;
-		syntaxError = true;
-	}
 	if (lexicalError || syntaxError) {
 		std::cout << "Derivation terminated with error(s).\n" << std::endl;
 		return 0;

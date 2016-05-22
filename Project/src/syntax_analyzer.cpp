@@ -21,7 +21,7 @@ int SyntaxAnalyzer::MatchToken(int token) {
 	while (true) {
 		// sign stands for the expect sign in LL derivation
 		int sign = grammar.FetchSign(mCurrentNode -> type, mCurrentNode -> matchCursor);
-		// matching process in current derivation is done
+		// matching process in current sentence is done
 		if (sign == EXCEED_DRVT) {
 			mCurrentNode = mCurrentNode -> parent;
 			if (mCurrentNode != NULL) {
@@ -32,9 +32,13 @@ int SyntaxAnalyzer::MatchToken(int token) {
 			}
 		}
 		// if match, push cursor
-		if (token == sign) {
-			mCurrentNode -> matchCursor++;
-			return SUCC;
+		if (sign < 2000) {
+			if (token == sign) {
+				mCurrentNode -> matchCursor++;
+				return SUCC;
+			} else {
+				
+			}
 		}
 		// if the expect sign is a non-terminal token, derivate recursively
 		if (sign >= 2000) {
