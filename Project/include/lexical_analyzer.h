@@ -31,6 +31,7 @@ public:
 	void InitFormulaInput(std::string fileName);
 	int GetNextToken(int& token, std::string& lexname);
 	void PrintTokenDFA();
+	std::string* FormulaPointer();
 };
 
 #endif

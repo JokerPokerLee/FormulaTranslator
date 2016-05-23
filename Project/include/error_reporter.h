@@ -3,8 +3,12 @@
 
 class ErrorReporter {
 private:
+	static std::string* formula;
 public:
-	static void Error(std::string& formula, std::string& token);
+	static void Init(std::string* formula_ptr) {
+		formula = formula_ptr;
+	};
+	static void PrintPosition(int tokenLength);
 };
 
 #endif

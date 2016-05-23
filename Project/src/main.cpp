@@ -4,6 +4,7 @@
 #include "lexical_analyzer.h"
 #include "syntax_analyzer.h"
 #include "html_printer.h"
+#include "error_reporter.h"
 
 int main(int argc, char* argv[]) {
 
@@ -26,6 +27,10 @@ int main(int argc, char* argv[]) {
 
 	std::cout << "The tokens read in will be recorded in \"output/token.out\"." << std::endl;
 	std::cout << "The derivations used will be recorded in \"output/derivation.out\".\n" << std::endl;
+
+	std::cout << "Bind formula string to error reporter." << std::endl;
+	ErrorReporter::Init(lexicalAnalyzer.FormulaPointer());
+	std::cout << "Formula string successfully binded to error reporter.\n" << std::endl;
 
 	std::cout << "Start derivating." << std::endl << std::endl;
 	sleep(1);

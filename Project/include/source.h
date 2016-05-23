@@ -16,7 +16,7 @@
 #define END_OF_FILE		0104
 
 //[1000, 2000) token name
-#define INTEGRITY 		1000
+#define INTEGRITY		1000
 #define SIGMA			1001
 #define BLANK			1002
 #define SUBSCRIPT		1003

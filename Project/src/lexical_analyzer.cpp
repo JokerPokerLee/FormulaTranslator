@@ -136,11 +136,18 @@ int LexicalAnalyzer::GetNextToken(int &token, std::string &lexname) {
 			}
 			currentToken += ch;
 		}
-		ErrorReporter::Error(formula, currentToken);
+		formula += currentToken;
+		std::cout << "lexical_analyzer: error" << ": ";
+		std::cout << "invalid token \"" << currentToken << "\" detected." << std::endl;
+		ErrorReporter::PrintPosition(currentToken.size());
 		return INVALID_TOKEN;
 	}
 }
 
 void LexicalAnalyzer::PrintTokenDFA() {
 	autoMachine.Print();
+}
+
+std::string* LexicalAnalyzer::FormulaPointer() {
+	return &formula;
 }

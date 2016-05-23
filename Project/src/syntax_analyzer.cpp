@@ -3,6 +3,7 @@
 #include "grammar.h"
 #include "LLTable.h"
 #include "html_printer.h"
+#include "error_reporter.h"
 #include "syntax_analyzer.h"
 
 static std::string leftCurly = std::string("(");
@@ -31,30 +32,37 @@ int SyntaxAnalyzer::MatchToken(int token) {
 				return DRVT_COMPLETE;
 			}
 		}
-		// if match, push cursor
+		// if the expect sign is a terminal token
+		// match the token
 		if (sign < 2000) {
 			if (token == sign) {
+				// if match, push cursor
 				mCurrentNode -> matchCursor++;
 				return SUCC;
 			} else {
-				return MISMATCH_TOKEN;
+				// print error info
+				std::cout << "syntax_analyzer: error: ";
+				std::cout << "expect \'" << grammar.translate[sign] << "\' before \'" << grammar.translate[token] << "\' token\n";
+				ErrorReporter::PrintPosition(grammar.translate[token].size());
 			}
 		}
-		// if the expect sign is a non-terminal token, derivate recursively
+		// if the expect sign is a non-terminal token
+		// derivate recursively
 		if (sign >= 2000) {
 			int derivation = table.Derivate(sign, token);
-			// no match rule
-			if (derivation == NO_LL_RULE) {
-				return MISMATCH_TOKEN;
+			if (derivation != NO_LL_RULE) {
+				// find a rule and derivate
+				grammar.Print(derivation);		// used for debug
+				mCurrentNode -> next.push_back(new Node(derivation, mCurrentNode));
+				mCurrentNode = mCurrentNode -> next.back();
+				continue;
+			} else {
+				// no match rules print error info
 			}
-			// used for debug
-			grammar.Print(derivation);
-			mCurrentNode -> next.push_back(new Node(derivation, mCurrentNode));
-			mCurrentNode = mCurrentNode -> next.back();
-			continue;
-		} else {
-			return MISMATCH_TOKEN;
 		}
+		// token mismatched
+		// errors toleration
+		return MISMATCH_TOKEN;
 	}
 	return SUCC;
 }

@@ -58,6 +58,7 @@ void Grammar::Init(const char* grammarInput, const char* mapInput) {
 }
 
 int Grammar::FetchSign(int k, int i) {
+	// no such sentence or exceed the sentence length
 	if (k >= derivationNumber || i >= derivation[k].size()) {
 		return EXCEED_DRVT;
 	}

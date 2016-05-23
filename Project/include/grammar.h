@@ -8,6 +8,7 @@ struct Grammar {
 	// the first sign is the left value
 	std::vector< std::vector<int> > derivation;
 	// used for restore the derivation from token string
+	// return the lexname of given token number
 	std::map<int , std::string> translate;
 	// debug output stream
 	std::ofstream debugOutStream;

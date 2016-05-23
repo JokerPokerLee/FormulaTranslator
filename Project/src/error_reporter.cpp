@@ -1,11 +1,11 @@
 #include <bits/stdc++.h>
 #include "error_reporter.h"
 
-void ErrorReporter::Error(std::string& formula, std::string& token) {
-	std::cout << "lexical_analyzer: error" << ": ";
-	std::cout << "Invalid token \"" << token << "\" detected." << std::endl;
-	std::cout << "\t" << formula << token << "\n\t";
-	for (int i = 0; i < formula.size(); i++)
+std::string* ErrorReporter::formula;
+
+void ErrorReporter::PrintPosition(int tokenLength) {
+	std::cout << "\t" << *formula << "\n\t";
+	for (int i = 0; i < (*formula).size() - tokenLength; i++)
 		std::cout << " ";
 	std::cout << "^\n\n";
 }
