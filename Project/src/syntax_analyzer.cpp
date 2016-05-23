@@ -37,7 +37,7 @@ int SyntaxAnalyzer::MatchToken(int token) {
 				mCurrentNode -> matchCursor++;
 				return SUCC;
 			} else {
-				
+				return MISMATCH_TOKEN;
 			}
 		}
 		// if the expect sign is a non-terminal token, derivate recursively
@@ -51,6 +51,7 @@ int SyntaxAnalyzer::MatchToken(int token) {
 			grammar.Print(derivation);
 			mCurrentNode -> next.push_back(new Node(derivation, mCurrentNode));
 			mCurrentNode = mCurrentNode -> next.back();
+			continue;
 		} else {
 			return MISMATCH_TOKEN;
 		}

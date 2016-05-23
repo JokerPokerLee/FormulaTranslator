@@ -12,14 +12,12 @@ int main(int argc, char* argv[]) {
 	lexicalAnalyzer.Init("../input/rule.in", "../input/formula.in");
 	sleep(1);
 	std::cout << "Lexical analyzer initialization complete.\n" << std::endl;
-	sleep(1);
 
 	std::cout << "Start initializing syntax analyzer." << std::endl;
 	SyntaxAnalyzer syntaxAnalyzer;
 	syntaxAnalyzer.Init("../input/sentence.in", "../input/map.in", "../input/LLTable.in");
 	sleep(1);
 	std::cout << "Syntax analyzer initialization complete.\n" << std::endl;
-	sleep(1);
 
 	std::cout << "Start initializing html printer." << std::endl;
 	HtmlPrinter::Init("../output/result.html");
@@ -46,7 +44,7 @@ int main(int argc, char* argv[]) {
 		// otherwise it would have breaked
 		// so there's only one possibility that the formula is incomplete
 		if (rtn == END_OF_FILE) {
-			std::cout << "lexical_analyzer:\terror" << ": ";
+			std::cout << "lexical_analyzer: error" << ": ";
 			std::cout << "The formula is incomplete." << std::endl;
 			break;
 		}
@@ -57,6 +55,10 @@ int main(int argc, char* argv[]) {
 
 		rtn = syntaxAnalyzer.MatchToken(token);
 		if (rtn == DRVT_COMPLETE) {
+			break;
+		}
+		if (rtn == MISMATCH_TOKEN) {
+			syntaxError = true;
 			break;
 		}
 		if (rtn == SUCC) {
