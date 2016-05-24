@@ -43,7 +43,7 @@ private:
 	Node* mCurrentNode;
 public:
 	void Init(const char* grammarInput, const char* mapInput, const char* LLTableInput);
-	int MatchToken(int token);
+	int MatchToken(int token, std::string& lexname);
 	void AssignLexname(std::string lexname);
 	void DetermineDepth(Node* node);
 	void DetermineDepth();

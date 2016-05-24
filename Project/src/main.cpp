@@ -11,18 +11,15 @@ int main(int argc, char* argv[]) {
 	std::cout << "Start initializing lexical analyzer." << std::endl;
 	LexicalAnalyzer lexicalAnalyzer;
 	lexicalAnalyzer.Init("../input/rule.in", "../input/formula.in");
-	sleep(1);
 	std::cout << "Lexical analyzer initialization complete.\n" << std::endl;
 
 	std::cout << "Start initializing syntax analyzer." << std::endl;
 	SyntaxAnalyzer syntaxAnalyzer;
 	syntaxAnalyzer.Init("../input/sentence.in", "../input/map.in", "../input/LLTable.in");
-	sleep(1);
 	std::cout << "Syntax analyzer initialization complete.\n" << std::endl;
 
 	std::cout << "Start initializing html printer." << std::endl;
 	HtmlPrinter::Init("../output/result.html");
-	sleep(1);
 	std::cout << "Html printer initialization complete.\n" << std::endl;
 
 	std::cout << "The tokens read in will be recorded in \"output/token.out\"." << std::endl;
@@ -33,7 +30,6 @@ int main(int argc, char* argv[]) {
 	std::cout << "Formula string successfully binded to error reporter.\n" << std::endl;
 
 	std::cout << "Start derivating." << std::endl << std::endl;
-	sleep(1);
 	int token;
 	std::string lexname;
 	bool lexicalError = false;
@@ -58,17 +54,12 @@ int main(int argc, char* argv[]) {
 			continue;
 		}
 
-		rtn = syntaxAnalyzer.MatchToken(token);
+		rtn = syntaxAnalyzer.MatchToken(token, lexname);
 		if (rtn == DRVT_COMPLETE) {
 			break;
 		}
 		if (rtn == MISMATCH_TOKEN) {
 			syntaxError = true;
-			break;
-		}
-		if (rtn == SUCC) {
-			if (token == ID || token == NUMBER || token == BLANK)
-				syntaxAnalyzer.AssignLexname(token != BLANK ? lexname : std::string(" "));
 		}
 	}
 
@@ -78,18 +69,14 @@ int main(int argc, char* argv[]) {
 	}
 
 	std::cout << "Derivation completed." << std::endl << std::endl;
-	sleep(1);
 
 	std::cout << "Start calc the height of the grammar tree." << std::endl;
 	syntaxAnalyzer.DetermineDepth();
-	sleep(1);
 	std::cout << "Height calculation complete.\n" << std::endl;
-	sleep(1);
 
 	std::cout << "Start printing formula." << std::endl;
 	syntaxAnalyzer.Print();
 	HtmlPrinter::Finish();
-	sleep(1);
 	std::cout << "The result has been written in \"output/result.html\".\n" << std::endl;
 
 	std::cout << "Formula translation complete." << std::endl;

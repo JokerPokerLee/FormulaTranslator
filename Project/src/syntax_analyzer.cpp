@@ -18,7 +18,8 @@ void SyntaxAnalyzer::Init(const char* grammarInput, const char* mapInput, const 
 }
 
 // read in token and decide to derivate or move on
-int SyntaxAnalyzer::MatchToken(int token) {
+int SyntaxAnalyzer::MatchToken(int token, std::string& lexname) {
+	bool errorDetected = false;
 	while (true) {
 		// sign stands for the expect sign in LL derivation
 		int sign = grammar.FetchSign(mCurrentNode -> type, mCurrentNode -> matchCursor);
@@ -38,12 +39,13 @@ int SyntaxAnalyzer::MatchToken(int token) {
 			if (token == sign) {
 				// if match, push cursor
 				mCurrentNode -> matchCursor++;
-				return SUCC;
+				if (token == ID || token == NUMBER || token == BLANK)
+					AssignLexname(token != BLANK ? lexname : std::string(" "));
+				return errorDetected ? MISMATCH_TOKEN : SUCC;
 			} else {
 				// print error info
 				std::cout << "syntax_analyzer: error: ";
 				std::cout << "expect \'" << grammar.translate[sign] << "\' before \'" << grammar.translate[token] << "\' token\n";
-				ErrorReporter::PrintPosition(grammar.translate[token].size());
 			}
 		}
 		// if the expect sign is a non-terminal token
@@ -57,14 +59,38 @@ int SyntaxAnalyzer::MatchToken(int token) {
 				mCurrentNode = mCurrentNode -> next.back();
 				continue;
 			} else {
-				// no match rules print error info
+				// no match rule, print error info
+				std::string info;
+				std::cout << "syntax_analyzer: error: ";
+				switch (sign) {
+					case SMARK:
+						info = std::string("expect \'$\' as a start symbol");
+						break;
+					case FMARK:
+						info = std::string("expect transcript type specification");
+						break;
+					case BMARK:
+						info = std::string("expect a formula before \'");
+						info += grammar.translate[token];
+						info += std::string("\' token");
+						break;
+				}
+				std::cout << info << std::endl;
 			}
 		}
-		// token mismatched
+		errorDetected = true;
+		// token mismatched, print error position
+		ErrorReporter::PrintPosition(lexname.size());
 		// errors toleration
-		return MISMATCH_TOKEN;
+		// if token is a kind of brackets
+		// or token specify the script type
+		// then discard the token
+		if (token >= SUBSCRIPT && token <= RIGHTBRACKET)
+			break;
+		// otherwise, continue to match
+		mCurrentNode -> matchCursor++;
 	}
-	return SUCC;
+	return errorDetected ? MISMATCH_TOKEN : SUCC;
 }
 
 // only leaf node can have lexname

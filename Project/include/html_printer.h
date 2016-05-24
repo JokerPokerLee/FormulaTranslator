@@ -3,6 +3,7 @@
 
 // #define FONT_FAMILY "Anonymous"
 #define FONT_FAMILY "Monaco"
+// #define FONT_FAMILY "monospace"
 
 class HtmlPrinter {
 private:
