@@ -41,6 +41,7 @@ int SyntaxAnalyzer::MatchToken(int token, std::string& lexname) {
 				mCurrentNode -> matchCursor++;
 				if (token == ID || token == NUMBER || token == BLANK)
 					AssignLexname(token != BLANK ? lexname : std::string(" "));
+				// consider the error detected before
 				return errorDetected ? MISMATCH_TOKEN : SUCC;
 			} else {
 				// print error info
@@ -81,14 +82,13 @@ int SyntaxAnalyzer::MatchToken(int token, std::string& lexname) {
 		errorDetected = true;
 		// token mismatched, print error position
 		ErrorReporter::PrintPosition(lexname.size());
-		// errors toleration
-		// if token is a kind of brackets
-		// or token specify the script type
-		// then discard the token
-		if (token >= SUBSCRIPT && token <= RIGHTBRACKET)
+		// Errors Toleration
+		// if token is a kind of brackets then discard the token
+		if (token >= LEFTCURLY && token <= RIGHTBRACKET)
 			break;
-		// otherwise, continue to match
-		mCurrentNode -> matchCursor++;
+		// otherwise, discard current node
+		// because there's always an F following
+		mCurrentNode = mCurrentNode -> parent;
 	}
 	return errorDetected ? MISMATCH_TOKEN : SUCC;
 }
