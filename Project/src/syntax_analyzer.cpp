@@ -88,7 +88,11 @@ int SyntaxAnalyzer::MatchToken(int token, std::string& lexname) {
 			break;
 		// otherwise, discard current node
 		// because there's always an F following
-		mCurrentNode = mCurrentNode -> parent;
+		if (sign == DOLLAR) {
+			mCurrentNode -> matchCursor++;
+		} else {
+			mCurrentNode = mCurrentNode -> parent;
+		}
 	}
 	return errorDetected ? MISMATCH_TOKEN : SUCC;
 }
