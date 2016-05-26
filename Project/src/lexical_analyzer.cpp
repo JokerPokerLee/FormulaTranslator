@@ -1,44 +1,8 @@
 #include <bits/stdc++.h>
 #include "source.h"
+#include "tokenDFA.h"
 #include "error_reporter.h"
 #include "lexical_analyzer.h"
-
-void TokenDFA::Init() {
-	totalState = 0;
-	startSta = 0;
-	foundSta.clear();
-	link.clear();
-}
-
-void TokenDFA::InsertRule(int state1, int state2, char ch) {
-	totalState = std::max(totalState, std::max(state1 + 1, state2 + 1));
-	link.resize(totalState);
-	if (link[state1].count(ch)) {
-		std::cout << "Collisional rules in TokenDFA." << std::endl;
-		exit(-1);
-	}
-	link[state1][ch] = state2;
-}
-
-int TokenDFA::Next(char ch) {
-	if (link[currentSta].count(ch)) {
-		currentSta = link[currentSta][ch];
-		return SUCC;
-	}
-	return INVALID_TOKEN;
-}
-
-bool TokenDFA::FoundToken() {
-	return foundSta.count(currentSta);
-}
-
-void TokenDFA::Print() {
-	for (int i = 0; i < totalState; i++)
-		for (int j = 0; j < 256; j++) {
-			if (link[i].count((char)j))
-				std::cout << i << " " << link[i][(char)j] << " " << (char)j << std::endl;
-		}
-}
 
 void LexicalAnalyzer::Init(const char* ruleInput, const char* formulaInput) {
 	autoMachine.Init();
@@ -89,28 +53,20 @@ int LexicalAnalyzer::GetNextToken(int &token, std::string &lexname) {
 	// every time start from the origin state
 	autoMachine.currentSta = autoMachine.startSta;
 
-	// keep trying to walk along the dfa
+	// keep trying to walk along the dfa until no
+	// edge corresponding to the read in charactor
 	// if reach the end of file, then break
-	// if reach a sta containing valid token, then break
 	std::string currentToken = "";
-	while (!feof(formulaInput) && !autoMachine.FoundToken()) {
+	while (!feof(formulaInput)) {
 		char ch = (char)getc(formulaInput);
-		if (ch != ' ' && ch != '\n') {
-			currentToken += ch;
-		}
 		if (autoMachine.Next(ch) == INVALID_TOKEN) {
+			// the readin character cannot be eof and must
+			// be an invalid char cause has checked in while
+			// so can push back the cursor without check
+			fseek(formulaInput, -1, SEEK_CUR);
 			break;
 		}
-		// special judge ALLSCRIPT
-		if (!feof(formulaInput) && autoMachine.currentSta == 26) {
-			ch = (char)getc(formulaInput);
-			// move backward the file pointer to guarantee
-			// that file pointer always point to the next
-			// character not proceeded
-			if (autoMachine.Next(ch) == INVALID_TOKEN) {
-				fseek(formulaInput, -1, SEEK_CUR);
-				break;
-			}
+		if (ch != ' ' && ch != '\n') {
 			currentToken += ch;
 		}
 	}

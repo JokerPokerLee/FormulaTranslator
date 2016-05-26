@@ -9,7 +9,7 @@ COMMON		=	include/source.h
 
 all: bin/$(TARGET)
 
-bin/$(TARGET): lib/main.o lib/$(SERROR).o lib/$(LEXANA).o lib/$(SPRINT).o lib/$(TEXANA).o lib/grammar.o lib/LLTable.o
+bin/$(TARGET): lib/main.o lib/$(SERROR).o lib/$(LEXANA).o lib/tokenDFA.o lib/$(SPRINT).o lib/$(TEXANA).o lib/grammar.o lib/LLTable.o
 	@mkdir -p bin
 	@echo link all .o files
 	@echo 1 > .compile_acted
@@ -25,9 +25,13 @@ lib/$(SERROR).o: src/$(SERROR).cpp include/$(SERROR).h
 	@echo compile $(SERROR).o
 	@$(CC) $(CFLAGS) -c $< -o $@
 
-lib/$(LEXANA).o: src/$(LEXANA).cpp include/$(LEXANA).h include/$(SERROR).h $(COMMON)
-	@mkdir -p lib
+lib/$(LEXANA).o: src/$(LEXANA).cpp include/$(LEXANA).h include/$(SERROR).h include/tokenDFA.h $(COMMON)
 	@echo compile $(LEXANA).o
+	@$(CC) $(CFLAGS) -c $< -o $@
+
+lib/tokenDFA.o: src/tokenDFA.cpp include/tokenDFA.h $(COMMON)
+	@mkdir -p lib
+	@echo compile tokenDFA.o
 	@$(CC) $(CFLAGS) -c $< -o $@
 
 lib/$(SPRINT).o: src/$(SPRINT).cpp include/$(SPRINT).h
@@ -36,7 +40,6 @@ lib/$(SPRINT).o: src/$(SPRINT).cpp include/$(SPRINT).h
 	@$(CC) $(CFLAGS) -c $< -o $@
 
 lib/$(TEXANA).o: src/$(TEXANA).cpp include/$(TEXANA).h include/$(SPRINT).h include/grammar.h include/LLTable.h $(COMMON)
-	@mkdir -p lib
 	@echo compile $(TEXANA).o
 	@$(CC) $(CFLAGS) -c $< -o $@
 
