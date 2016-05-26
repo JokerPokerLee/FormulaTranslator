@@ -1,3 +1,4 @@
+rm -f ./.compile_acted
 echo
 echo "********************Start Sompile*********************"
 echo
