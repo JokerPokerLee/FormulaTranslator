@@ -72,7 +72,7 @@ int LexicalAnalyzer::GetNextToken(int &token, std::string &lexname) {
 	}
 
 	// if no characters read in, then it reach the end of the file
-	if (currentToken.empty()) {
+	if (feof(formulaInput) && currentToken.empty()) {
 		return END_OF_FILE;
 	}
 
