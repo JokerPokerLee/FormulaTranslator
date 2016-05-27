@@ -4,11 +4,11 @@
 #include "error_reporter.h"
 #include "lexical_analyzer.h"
 
-void LexicalAnalyzer::Init(const char* ruleInput, const char* formulaInput) {
+void LexicalAnalyzer::Init(const char* ruleInput, char* formulaInputFile) {
 	autoMachine.Init();
 	formula = "";
 	BuildTokenDFA(std::string(ruleInput));
-	InitFormulaInput(std::string(formulaInput));
+	formulaInput = fopen(formulaInputFile, "r");
 	debugOutStream.open("../output/token.out");
 }
 
@@ -43,10 +43,6 @@ void LexicalAnalyzer::BuildTokenDFA(std::string fileName) {
 		autoMachine.InsertRule(state1, state2, ch);
 	}
 	fclose(ruleInput);
-}
-
-void LexicalAnalyzer::InitFormulaInput(std::string fileName) {
-	formulaInput = fopen(fileName.c_str(), "r");
 }
 
 int LexicalAnalyzer::GetNextToken(int &token, std::string &lexname) {

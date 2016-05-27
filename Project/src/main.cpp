@@ -1,5 +1,4 @@
 #include <bits/stdc++.h>
-#include <unistd.h>
 #include "source.h"
 #include "lexical_analyzer.h"
 #include "syntax_analyzer.h"
@@ -8,9 +7,27 @@
 
 int main(int argc, char* argv[]) {
 
+	char* formulaInputFile;
+
+	if (argc == 1) {
+		std::cout << "Please input the formula code:" << std::endl;
+		FILE* fp = fopen("../input/formula.in", "w");
+		char ch;
+		while ((ch = (char)getchar()) != EOF) {
+			if (ch != '\n') {
+				fputc(ch, fp);
+			}
+		}
+		fclose(fp);
+		std::cout << "\n\n";
+		formulaInputFile = "../input/formula.in";
+	} else {
+		formulaInputFile = argv[1];
+	}
+
 	std::cout << "Start initializing lexical analyzer." << std::endl;
 	LexicalAnalyzer lexicalAnalyzer;
-	lexicalAnalyzer.Init("../input/rule.in", "../input/formula.in");
+	lexicalAnalyzer.Init("../input/rule.in", formulaInputFile);
 	std::cout << "Lexical analyzer initialization complete.\n" << std::endl;
 
 	std::cout << "Start initializing syntax analyzer." << std::endl;

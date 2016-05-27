@@ -13,7 +13,7 @@ if [[ $? == 0 ]]; then
 	echo "*******************Compile Complete*******************"
 	echo
 	cd bin 
-	./formula_translator
+	./formula_translator ../input/formula.in
 else
 	echo
 	echo "***********Compile terminated with error(s)***********"

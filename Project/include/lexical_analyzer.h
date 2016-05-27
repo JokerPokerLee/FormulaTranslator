@@ -11,9 +11,8 @@ private:
 	std::string formula;
 	std::ofstream debugOutStream;
 public:
-	void Init(const char* ruleInput, const char* formulaInput);
+	void Init(const char* ruleInput, char* formulaInput);
 	void BuildTokenDFA(std::string fileName);
-	void InitFormulaInput(std::string fileName);
 	int GetNextToken(int& token, std::string& lexname);
 	void PrintTokenDFA();
 	std::string* FormulaPointer();
