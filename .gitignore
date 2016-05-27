@@ -12,3 +12,7 @@
 
 # debug output
 */output/*.out
+
+# tex compile file
+*.aux
+*.log
