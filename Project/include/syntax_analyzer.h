@@ -41,6 +41,8 @@ private:
 	LLTable table;
 	Node* root;
 	Node* mCurrentNode;
+	// record if last token printed is ID
+	bool isLastID;
 public:
 	void Init(const char* grammarInput, const char* mapInput, const char* LLTableInput);
 	int MatchToken(int token, std::string& lexname);

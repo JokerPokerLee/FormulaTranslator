@@ -12,6 +12,13 @@ void HtmlPrinter::Init(const char* formulaOutput) {
 }
 
 int HtmlPrinter::PrintToken(int left, int top, int fontSize, int fontStyle, std::string& token, int len) {
+	// continuous ID need to be seperated by space
+	// a token with leading space mark the situation above
+	if (token[0] == ' ') {
+		left += fontSize * 2 / 5;
+		token = token.substr(1, token.size() - 1);
+		len--;
+	}
 	fprintf(htmlOutputFile, "\t\t<div style=\"position: absolute; left:%dpx; top:%dpx;\">\n", left, top);
 	fprintf(htmlOutputFile, "\t\t\t<span style=\"font-family:%s; font-size:%dpx; font-style:%s; line-height:100%%;\">", FONT_FAMILY, fontSize, fontStyle ? "oblique" : "normal");
 	fprintf(htmlOutputFile, "%s</span>\n\t\t</div>\n", token.c_str());

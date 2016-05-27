@@ -15,6 +15,7 @@ void SyntaxAnalyzer::Init(const char* grammarInput, const char* mapInput, const 
 	// first derivation
 	grammar.Print(1);
 	mCurrentNode = root = new Node(1, NULL);
+	isLastID = false;
 }
 
 // read in token and decide to derivate or move on
@@ -183,10 +184,13 @@ int SyntaxAnalyzer::PrintAllScript(Node* currentNode) {
 	currentCursor = originCursor;
 	currentCursor = PrintOneScript(1, currentNode, 0);
 	currentCursor = PrintOneScript(1, currentNode, 1);
+	// ID in different scripts has no need to be sperated
+	isLastID = false;
 	//print superscript
 	currentCursor = originCursor;
 	currentCursor = PrintOneScript(0, currentNode, 2);
 	currentCursor = PrintOneScript(0, currentNode, 3);
+	isLastID = false;
 	//push cursor and print suffix
 	currentCursor = std::max(currentNode -> next[1] -> printCursor, currentNode -> next[3] -> printCursor);
 	currentNode -> next[4] -> SetPosition(currentCursor, currentTop);
@@ -211,7 +215,12 @@ int SyntaxAnalyzer::PrintSentence(Node* currentNode) {
 	if (currentType >= 9 && currentType <= 11) {
 		std::string token = *(currentNode -> lexname);
 		int style = currentType == 9 ? 1 : 0;
+		if ((currentType == 9 || currentType == 10) && isLastID) {
+			// continuous ID need to be seperated by space
+			token = std::string(" ") + token;
+		}
 		currentCursor = HtmlPrinter::PrintToken(currentCursor, currentTop, currentSize, style, token, token.size());
+		isLastID = currentType == 9;
 		return currentNode -> printCursor;
 	}
 	int pos, delta;
@@ -226,6 +235,8 @@ int SyntaxAnalyzer::PrintSentence(Node* currentNode) {
 			break;
 		case 4:
 			currentCursor = PrintAllScript(currentNode);
+			// if print script, then the seperate spaces are no longer needed
+			// same situations below
 			break;
 		case 5:	
 		case 6:
@@ -233,6 +244,7 @@ int SyntaxAnalyzer::PrintSentence(Node* currentNode) {
 			currentCursor = PrintOneScript(pos, currentNode, 0);
 			currentCursor = PrintOneScript(pos, currentNode, 1);
 			currentNode -> next[2] -> SetPosition(currentCursor, currentTop);
+			isLastID = false;
 			currentCursor = PrintSentence(currentNode -> next[2]);
 			break;
 		case 7:
@@ -247,6 +259,7 @@ int SyntaxAnalyzer::PrintSentence(Node* currentNode) {
 			// token = (currentNode -> type & 1) ? "∫" : "∑";
 			currentCursor = HtmlPrinter::PrintToken(currentCursor, currentTop - delta * 4 / 5, currentSize + delta, 0, token, 1);
 			currentCursor = PrintAllScript(currentNode);
+			isLastID = false;
 			break;
 		case 12:
 			currentCursor = HtmlPrinter::PrintToken(currentCursor, currentTop, currentSize, 0, leftCurly, 1);
@@ -255,6 +268,7 @@ int SyntaxAnalyzer::PrintSentence(Node* currentNode) {
 				currentCursor = PrintSentence(currentNode -> next[i]);
 			}
 			currentCursor = HtmlPrinter::PrintToken(currentCursor, currentTop, currentSize, 0, rightCurly, 1);
+			isLastID = false;
 			break;
 		default:
 			//ERROR

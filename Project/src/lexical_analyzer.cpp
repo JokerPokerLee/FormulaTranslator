@@ -65,6 +65,7 @@ int LexicalAnalyzer::GetNextToken(int &token, std::string &lexname) {
 		if (ch != ' ' && ch != '\n') {
 			currentToken += ch;
 		}
+		formula += ch;
 	}
 
 	// if no characters read in, then it reach the end of the file
@@ -73,7 +74,7 @@ int LexicalAnalyzer::GetNextToken(int &token, std::string &lexname) {
 	}
 
 	if (autoMachine.FoundToken()) {		// found a token
-		formula += currentToken;
+		// formula += currentToken;
 		token = autoMachine.foundSta[autoMachine.currentSta];
 		lexname = currentToken;
 		// record for debug
