@@ -216,7 +216,7 @@ int SyntaxAnalyzer::PrintSentence(Node* currentNode) {
 		std::string token = *(currentNode -> lexname);
 		int style = currentType == 9 ? 1 : 0;
 		if ((currentType == 9 || currentType == 10) && isLastID) {
-			// continuous ID need to be seperated by space
+			// continuous ID need to be separated by space
 			token = std::string(" ") + token;
 		}
 		currentCursor = HtmlPrinter::PrintToken(currentCursor, currentTop, currentSize, style, token, token.size());
@@ -235,7 +235,7 @@ int SyntaxAnalyzer::PrintSentence(Node* currentNode) {
 			break;
 		case 4:
 			currentCursor = PrintAllScript(currentNode);
-			// if print script, then the seperate spaces are no longer needed
+			// if print script, then the separate spaces are no longer needed
 			// same situations below
 			break;
 		case 5:	

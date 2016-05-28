@@ -12,7 +12,7 @@ void HtmlPrinter::Init(const char* formulaOutput) {
 }
 
 int HtmlPrinter::PrintToken(int left, int top, int fontSize, int fontStyle, std::string& token, int len) {
-	// continuous ID need to be seperated by space
+	// continuous ID need to be separated by space
 	// a token with leading space mark the situation above
 	if (token[0] == ' ') {
 		left += fontSize * 2 / 5;
