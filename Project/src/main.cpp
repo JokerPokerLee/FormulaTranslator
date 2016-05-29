@@ -48,7 +48,7 @@ int main(int argc, char* argv[]) {
 	ErrorReporter::Init(lexicalAnalyzer.FormulaPointer());
 	std::cout << "Formula string successfully binded to error reporter.\n" << std::endl;
 
-	std::cout << "Start derivating." << std::endl << std::endl;
+	std::cout << "===================Start derivating.===================" << std::endl << std::endl;
 	int token;
 	std::string lexname;
 	bool lexicalError = false;
@@ -65,7 +65,8 @@ int main(int argc, char* argv[]) {
 		// so there's only one possibility that the formula is incomplete
 		if (rtn == END_OF_FILE) {
 			std::cout << "lexical_analyzer: error" << ": ";
-			std::cout << "The formula is incomplete." << std::endl;
+			std::cout << "The formula should be ended with $.\n" << std::endl;
+			lexicalError = true;
 			break;
 		}
 		if (rtn == INVALID_TOKEN) {
@@ -77,17 +78,25 @@ int main(int argc, char* argv[]) {
 		if (rtn == DRVT_COMPLETE) {
 			break;
 		}
+		if (rtn == DRVT_TERMINATED) {
+			std::cout << "syntax_analyzer: error" << ": ";
+			std::cout << "The formula should be ended with $.\n" << std::endl;
+			syntaxError = true;
+			break;
+		}
 		if (rtn == MISMATCH_TOKEN) {
 			syntaxError = true;
 		}
 	}
 
 	if (lexicalError || syntaxError) {
-		std::cout << "Derivation terminated with error(s).\n" << std::endl;
+		std::cout << "==========Derivation terminated with error(s).=========\n" << std::endl;
 		return 0;
+	} else {
+		std::cout << "No error detected.\n" << std::endl;
 	}
 
-	std::cout << "Derivation completed." << std::endl << std::endl;
+	std::cout << "=================Derivation completed.=================\n" << std::endl;
 
 	std::cout << "Start calc the height of the grammar tree." << std::endl;
 	syntaxAnalyzer.DetermineDepth();

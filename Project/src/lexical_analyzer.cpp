@@ -52,24 +52,21 @@ int LexicalAnalyzer::GetNextToken(int &token, std::string &lexname) {
 	// keep trying to walk along the dfa until no
 	// edge corresponding to the read in charactor
 	// if reach the end of file, then break
+	char ch;
 	std::string currentToken = "";
-	while (!feof(formulaInput)) {
-		char ch = (char)getc(formulaInput);
-		if (autoMachine.Next(ch) == INVALID_TOKEN) {
-			// the readin character cannot be eof and must
-			// be an invalid char cause has checked in while
-			// so can push back the cursor without check
-			fseek(formulaInput, -1, SEEK_CUR);
-			break;
-		}
+	while (autoMachine.Next(ch = (char)getc(formulaInput)) != INVALID_TOKEN) {
 		if (ch != ' ' && ch != '\n') {
 			currentToken += ch;
 		}
 		formula += ch;
 	}
 
+	if (ch != EOF) {
+		fseek(formulaInput, -1, SEEK_CUR);
+	}
+
 	// if no characters read in, then it reach the end of the file
-	if (feof(formulaInput) && currentToken.empty()) {
+	if (ch == EOF && currentToken.empty()) {
 		return END_OF_FILE;
 	}
 

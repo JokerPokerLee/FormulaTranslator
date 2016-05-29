@@ -14,6 +14,7 @@
 #define MISMATCH_TOKEN	0102
 #define INVALID_TOKEN	0103
 #define END_OF_FILE		0104
+#define DRVT_TERMINATED	0105
 
 //[1000, 2000) token name
 #define INTEGRITY		1000

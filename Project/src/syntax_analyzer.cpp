@@ -31,7 +31,7 @@ int SyntaxAnalyzer::MatchToken(int token, std::string& lexname) {
 				mCurrentNode -> matchCursor++;
 				continue;
 			} else {
-				return DRVT_COMPLETE;
+				return DRVT_TERMINATED;
 			}
 		}
 		// if the expect sign is a terminal token
@@ -40,6 +40,8 @@ int SyntaxAnalyzer::MatchToken(int token, std::string& lexname) {
 			if (token == sign) {
 				// if match, push cursor
 				mCurrentNode -> matchCursor++;
+				if (mCurrentNode -> type == 1 && mCurrentNode -> matchCursor == 5)
+					return DRVT_COMPLETE;
 				if (token == ID || token == NUMBER || token == BLANK)
 					AssignLexname(token != BLANK ? lexname : std::string(" "));
 				// consider the error detected before
@@ -47,7 +49,7 @@ int SyntaxAnalyzer::MatchToken(int token, std::string& lexname) {
 			} else {
 				// print error info
 				std::cout << "syntax_analyzer: error: ";
-				std::cout << "expect \'" << grammar.translate[sign] << "\' before \'" << grammar.translate[token] << "\' token\n";
+				std::cout << "expect \'" << grammar.translate[sign] << "\' before \'" << lexname << "\' token.\n";
 			}
 		}
 		// if the expect sign is a non-terminal token
@@ -66,15 +68,15 @@ int SyntaxAnalyzer::MatchToken(int token, std::string& lexname) {
 				std::cout << "syntax_analyzer: error: ";
 				switch (sign) {
 					case SMARK:
-						info = std::string("expect \'$\' as a start symbol");
+						info = std::string("expect \'$\' as a start symbol.");
 						break;
 					case FMARK:
-						info = std::string("expect transcript type specification");
+						info = std::string("expect transcript type specification.");
 						break;
 					case BMARK:
 						info = std::string("expect a formula before \'");
 						info += grammar.translate[token];
-						info += std::string("\' token");
+						info += std::string("\' token.");
 						break;
 				}
 				std::cout << info << std::endl;
@@ -168,9 +170,7 @@ int SyntaxAnalyzer::PrintOneScript(int pos, Node* currentNode, int nextNumber) {
 	Node* nextNode = currentNode -> next[nextNumber];
 	// pos = 0 when solve superscript vise verse subscript pos = 1
 	int nextTop = currentTop + pos * (currentSize - nextSize);
-	nextTop += pos ? (nextSize / 5) : -(nextSize / 2);
-	//nextTop += (pos ^ 1) * nextSize / 5;
-
+	nextTop += pos * (nextSize / 5);
 	nextNode -> SetPosition(currentCursor, nextTop);
 	return PrintSentence(nextNode);
 }
@@ -180,6 +180,8 @@ int SyntaxAnalyzer::PrintAllScript(Node* currentNode) {
 	int currentTop = currentNode -> top;
 	int originCursor = currentNode -> printCursor;
 	int& currentCursor = currentNode -> printCursor;
+	// ID in different scripts has no need to be sperated
+	isLastID = false;
 	//print subscript
 	currentCursor = originCursor;
 	currentCursor = PrintOneScript(1, currentNode, 0);
@@ -190,6 +192,7 @@ int SyntaxAnalyzer::PrintAllScript(Node* currentNode) {
 	currentCursor = originCursor;
 	currentCursor = PrintOneScript(0, currentNode, 2);
 	currentCursor = PrintOneScript(0, currentNode, 3);
+	// ID in different scripts has no need to be sperated
 	isLastID = false;
 	//push cursor and print suffix
 	currentCursor = std::max(currentNode -> next[1] -> printCursor, currentNode -> next[3] -> printCursor);

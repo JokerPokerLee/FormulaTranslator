@@ -24,7 +24,7 @@ struct Node {
 	// not NULL if the node is a token
 	std::string* lexname;
 
-	Node(int type, Node* parent) : type(type), parent(parent) {
+	Node(int t, Node* p) : type(t), parent(p) {
 		matchCursor = 1;
 		fontSize = 0;
 		lexname = NULL;

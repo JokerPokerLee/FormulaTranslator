@@ -20,8 +20,8 @@ int HtmlPrinter::PrintToken(int left, int top, int fontSize, int fontStyle, std:
 		len--;
 	}
 	fprintf(htmlOutputFile, "\t\t<div style=\"position: absolute; left:%dpx; top:%dpx;\">\n", left, top);
-	fprintf(htmlOutputFile, "\t\t\t<span style=\"font-family:%s; font-size:%dpx; font-style:%s; line-height:100%%;\">", FONT_FAMILY, fontSize, fontStyle ? "oblique" : "normal");
-	fprintf(htmlOutputFile, "%s</span>\n\t\t</div>\n", token.c_str());
+	fprintf(htmlOutputFile, "\t\t\t<span style=\"font-family:%s; font-size:%dpx; font-style:%s; line-height:100%%;\">\n", FONT_FAMILY, fontSize, fontStyle ? "oblique" : "normal");
+	fprintf(htmlOutputFile, "\t\t\t\t%s\n\t\t\t</span>\n\t\t</div>\n", token.c_str());
 	return left + len * fontSize * 3 / 5;
 }
 
