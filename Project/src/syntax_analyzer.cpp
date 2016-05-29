@@ -91,6 +91,8 @@ int SyntaxAnalyzer::MatchToken(int token, std::string& lexname) {
 			break;
 		// otherwise, discard current node
 		// because there's always an F following
+		// check if sign = dollar, if not, the first symbol error
+		// may cause program end immediately
 		if (sign == DOLLAR) {
 			mCurrentNode -> matchCursor++;
 		} else {
