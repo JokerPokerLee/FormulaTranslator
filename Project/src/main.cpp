@@ -11,9 +11,11 @@ int main(int argc, char* argv[]) {
 
 	if (argc == 1) {
 		std::cout << "Please input the formula code:" << std::endl;
+		std::cout << "(input should be ended with #)" << std::endl;
 		FILE* fp = fopen("../input/formula.in", "w");
 		char ch;
-		while ((ch = (char)getchar()) != EOF) {
+		int cntDollar = 0;
+		while ((ch = (char)getchar()) != '#') {
 			if (ch != '\n') {
 				fputc(ch, fp);
 			}
