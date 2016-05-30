@@ -246,6 +246,7 @@ int SyntaxAnalyzer::PrintSentence(Node* currentNode) {
 		case 5:	
 		case 6:
 			pos = (currentNode -> type + 1) & 1;
+			isLastID = false;
 			currentCursor = PrintOneScript(pos, currentNode, 0);
 			currentCursor = PrintOneScript(pos, currentNode, 1);
 			currentNode -> next[2] -> SetPosition(currentCursor, currentTop);
@@ -261,13 +262,13 @@ int SyntaxAnalyzer::PrintSentence(Node* currentNode) {
 				token = "Σ";
 				delta = 5;
 			}
-			// token = (currentNode -> type & 1) ? "∫" : "∑";
 			currentCursor = HtmlPrinter::PrintToken(currentCursor, currentTop - delta * 4 / 5, currentSize + delta, 0, token, 1);
-			currentCursor = PrintAllScript(currentNode);
 			isLastID = false;
+			currentCursor = PrintAllScript(currentNode);
 			break;
 		case 12:
 			currentCursor = HtmlPrinter::PrintToken(currentCursor, currentTop, currentSize, 0, leftCurly, 1);
+			isLastID = false;
 			for (int i = 0; i < currentNode -> next.size(); i++) {
 				currentNode -> next[i] -> SetPosition(currentCursor, currentTop);
 				currentCursor = PrintSentence(currentNode -> next[i]);
