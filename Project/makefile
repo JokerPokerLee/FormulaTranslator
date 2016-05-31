@@ -1,4 +1,4 @@
-CC			=	g++ -w -std=c++11
+CC			=	g++ -Wall -std=c++11
 CFLAGS		=	-I include/
 TARGET		=	formula_translator
 LEXANA		=	lexical_analyzer
@@ -21,7 +21,7 @@ lib/main.o: src/main.cpp include/*
 	@$(CC) $(CFLAGS) -c $< -o $@
 
 lib/$(SERROR).o: src/$(SERROR).cpp include/$(SERROR).h
-	@mkdir -p lib 
+	@mkdir -p lib
 	@echo compiling $(SERROR).o
 	@$(CC) $(CFLAGS) -c $< -o $@
 
