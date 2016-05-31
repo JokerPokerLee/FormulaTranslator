@@ -5,7 +5,7 @@ std::string* ErrorReporter::formula;
 
 void ErrorReporter::PrintPosition(int tokenLength) {
 	std::cout << "\t" << *formula << "\n\t";
-	for (int i = 0; i < (*formula).size() - tokenLength; i++)
+	for (int i = 0; i < (int)(*formula).size() - tokenLength; i++)
 		std::cout << " ";
 	std::cout << "^\n\n";
 }

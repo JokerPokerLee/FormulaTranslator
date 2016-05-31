@@ -15,7 +15,7 @@ void Grammar::Init(const char* grammarInput, const char* mapInput) {
 		if (currentSentence.size() == 0) break;
 		derivationNumber++;
 		derivation.resize(derivationNumber);
-		for (int i = 0; i < currentSentence.size(); i++) {
+		for (unsigned int i = 0; i < currentSentence.size(); i++) {
 			int code;
 			// rematch the signs with single char
 			switch (currentSentence[i]) {
@@ -57,7 +57,7 @@ void Grammar::Init(const char* grammarInput, const char* mapInput) {
 	debugOutStream << "Left most derivation:" << std::endl;
 }
 
-int Grammar::FetchSign(int k, int i) {
+int Grammar::FetchSign(int k, unsigned int i) {
 	// no such sentence or exceed the sentence length
 	if (k >= derivationNumber || i >= derivation[k].size()) {
 		return EXCEED_DRVT;
@@ -69,7 +69,7 @@ int Grammar::FetchSign(int k, int i) {
 
 void Grammar::Print(int k) {
 	debugOutStream << translate[derivation[k][0]] << " -> ";
-	for (int i = 1; i < derivation[k].size(); i++) {
+	for (unsigned int i = 1; i < derivation[k].size(); i++) {
 		debugOutStream << translate[derivation[k][i]];
 	}
 	debugOutStream << std::endl;

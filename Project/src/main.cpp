@@ -14,7 +14,6 @@ int main(int argc, char* argv[]) {
 		std::cout << "(input should be ended with #)" << std::endl;
 		FILE* fp = fopen("../input/formula.in", "w");
 		char ch;
-		int cntDollar = 0;
 		while ((ch = (char)getchar()) != '#') {
 			if (ch != '\n') {
 				fputc(ch, fp);
@@ -22,7 +21,7 @@ int main(int argc, char* argv[]) {
 		}
 		fclose(fp);
 		std::cout << "\n\n";
-		formulaInputFile = "../input/formula.in";
+		formulaInputFile = (char *)"../input/formula.in";
 	} else {
 		formulaInputFile = argv[1];
 	}

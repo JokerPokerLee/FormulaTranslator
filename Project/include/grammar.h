@@ -17,7 +17,7 @@ struct Grammar {
 	// read in the token-lex map
 	void Init(const char* grammarInput, const char* mapInput);
 	// return the i-th sign in k-th derivation
-	int FetchSign(int k, int i);
+	int FetchSign(int k, unsigned int i);
 	// print k-th derivations
 	void Print(int k);
 };

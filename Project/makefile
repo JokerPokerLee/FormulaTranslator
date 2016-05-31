@@ -17,40 +17,40 @@ bin/$(TARGET): lib/main.o lib/$(SERROR).o lib/$(LEXANA).o lib/tokenDFA.o lib/$(S
 
 lib/main.o: src/main.cpp include/*
 	@mkdir -p lib
-	@echo compiling main.o
+	@echo compiling main
 	@$(CC) $(CFLAGS) -c $< -o $@
 
 lib/$(SERROR).o: src/$(SERROR).cpp include/$(SERROR).h
 	@mkdir -p lib
-	@echo compiling $(SERROR).o
+	@echo compiling $(SERROR)
 	@$(CC) $(CFLAGS) -c $< -o $@
 
 lib/$(LEXANA).o: src/$(LEXANA).cpp include/$(LEXANA).h include/$(SERROR).h include/tokenDFA.h $(COMMON)
-	@echo compiling $(LEXANA).o
+	@echo compiling $(LEXANA)
 	@$(CC) $(CFLAGS) -c $< -o $@
 
 lib/tokenDFA.o: src/tokenDFA.cpp include/tokenDFA.h $(COMMON)
 	@mkdir -p lib
-	@echo compiling tokenDFA.o
+	@echo compiling tokenDFA
 	@$(CC) $(CFLAGS) -c $< -o $@
 
 lib/$(SPRINT).o: src/$(SPRINT).cpp include/$(SPRINT).h
 	@mkdir -p lib
-	@echo compiling $(SPRINT).o
+	@echo compiling $(SPRINT)
 	@$(CC) $(CFLAGS) -c $< -o $@
 
 lib/$(TEXANA).o: src/$(TEXANA).cpp include/$(TEXANA).h include/$(SPRINT).h include/grammar.h include/LLTable.h $(COMMON)
-	@echo compiling $(TEXANA).o
+	@echo compiling $(TEXANA)
 	@$(CC) $(CFLAGS) -c $< -o $@
 
 lib/grammar.o: src/grammar.cpp include/grammar.h
 	@mkdir -p lib
-	@echo compiling grammar.o
+	@echo compiling grammar
 	@$(CC) $(CFLAGS) -c $< -o $@
 
 lib/LLTable.o: src/LLTable.cpp include/LLTable.h
 	@mkdir -p lib
-	@echo compiling LLTable.o
+	@echo compiling LLTable
 	@$(CC) $(CFLAGS) -c $< -o $@
 
 .PHONY: clean

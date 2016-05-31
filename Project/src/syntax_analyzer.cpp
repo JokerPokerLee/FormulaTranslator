@@ -113,7 +113,7 @@ void SyntaxAnalyzer::AssignLexname(std::string lexname) {
 void SyntaxAnalyzer::DetermineDepth(Node* node) {
 	// default font size
 	node -> fontSize = MINIMUM_SIZE;
-	for (int i = 0; i < node -> next.size(); i++) {
+	for (unsigned int i = 0; i < node -> next.size(); i++) {
 		DetermineDepth(node -> next[i]);
 		// indicate whether to shrink
 		int ratio = 0;
@@ -121,7 +121,7 @@ void SyntaxAnalyzer::DetermineDepth(Node* node) {
 		if (node -> type >= 5 && node -> type <= 6)
 			ratio = i < 2;
 		// have both supscript and subscript
-		if (node -> type == 4 || node -> type >= 7 && node -> type <= 8)
+		if (node -> type == 4 || (node -> type >= 7 && node -> type <= 8))
 			ratio = i < 4;
 		node -> fontSize = std::max(node -> fontSize, node -> next[i] -> fontSize * (ratio + 1));
 	}
@@ -141,14 +141,14 @@ void SyntaxAnalyzer::DetermineDepth() {
 	while (nodeQueue.size()) {
 		Node* now = nodeQueue.front();
 		nodeQueue.pop();
-		for (int i = 0; i < now -> next.size(); i++) {
+		for (unsigned int i = 0; i < now -> next.size(); i++) {
 			// indicate whether to shrink
 			int ratio = 0;
 			// have only supscript or subscript
 			if (now -> type >= 5 && now -> type <= 6)
 				ratio = i < 2;
 			// have both supscript and subscript
-			if (now -> type == 4 || now -> type >= 7 && now -> type <= 8)
+			if (now -> type == 4 || (now -> type >= 7 && now -> type <= 8))
 				ratio = i < 4;
 			now -> next[i] -> fontSize = now -> fontSize / (ratio + 1);
 			nodeQueue.push(now -> next[i]);
@@ -233,7 +233,7 @@ int SyntaxAnalyzer::PrintSentence(Node* currentNode) {
 	switch (currentNode -> type) {
 		case 1:
 		case 2:
-			for (int i = 0; i < currentNode -> next.size(); i++) {
+			for (unsigned int i = 0; i < currentNode -> next.size(); i++) {
 				currentNode -> next[i] -> SetPosition(currentCursor, currentTop);
 				currentCursor = PrintSentence(currentNode -> next[i]);
 			}
@@ -269,7 +269,7 @@ int SyntaxAnalyzer::PrintSentence(Node* currentNode) {
 		case 12:
 			currentCursor = HtmlPrinter::PrintToken(currentCursor, currentTop, currentSize, 0, leftCurly, 1);
 			isLastID = false;
-			for (int i = 0; i < currentNode -> next.size(); i++) {
+			for (unsigned int i = 0; i < currentNode -> next.size(); i++) {
 				currentNode -> next[i] -> SetPosition(currentCursor, currentTop);
 				currentCursor = PrintSentence(currentNode -> next[i]);
 			}
