@@ -6,6 +6,7 @@ TEXANA		=	syntax_analyzer
 SPRINT		=	html_printer
 SERROR		=	error_reporter
 COMMON		=	include/source.h
+COMMAND		=	$(CC) $(CFLAGS) -c $< -o $@
 
 all: bin/$(TARGET)
 
@@ -18,40 +19,35 @@ bin/$(TARGET): lib/main.o lib/$(SERROR).o lib/$(LEXANA).o lib/tokenDFA.o lib/$(S
 lib/main.o: src/main.cpp include/*
 	@mkdir -p lib
 	@echo compiling main
-	@$(CC) $(CFLAGS) -c $< -o $@
+	@$(COMMAND)
 
 lib/$(SERROR).o: src/$(SERROR).cpp include/$(SERROR).h
-	@mkdir -p lib
 	@echo compiling $(SERROR)
-	@$(CC) $(CFLAGS) -c $< -o $@
+	@$(COMMAND)
 
 lib/$(LEXANA).o: src/$(LEXANA).cpp include/$(LEXANA).h include/$(SERROR).h include/tokenDFA.h $(COMMON)
 	@echo compiling $(LEXANA)
-	@$(CC) $(CFLAGS) -c $< -o $@
+	@$(COMMAND)
 
 lib/tokenDFA.o: src/tokenDFA.cpp include/tokenDFA.h $(COMMON)
-	@mkdir -p lib
 	@echo compiling tokenDFA
-	@$(CC) $(CFLAGS) -c $< -o $@
+	@$(COMMAND)
 
 lib/$(SPRINT).o: src/$(SPRINT).cpp include/$(SPRINT).h
-	@mkdir -p lib
 	@echo compiling $(SPRINT)
-	@$(CC) $(CFLAGS) -c $< -o $@
+	@$(COMMAND)
 
 lib/$(TEXANA).o: src/$(TEXANA).cpp include/$(TEXANA).h include/$(SPRINT).h include/grammar.h include/LLTable.h $(COMMON)
 	@echo compiling $(TEXANA)
-	@$(CC) $(CFLAGS) -c $< -o $@
+	@$(COMMAND)
 
 lib/grammar.o: src/grammar.cpp include/grammar.h
-	@mkdir -p lib
 	@echo compiling grammar
-	@$(CC) $(CFLAGS) -c $< -o $@
+	@$(COMMAND)
 
 lib/LLTable.o: src/LLTable.cpp include/LLTable.h
-	@mkdir -p lib
 	@echo compiling LLTable
-	@$(CC) $(CFLAGS) -c $< -o $@
+	@$(COMMAND)
 
 .PHONY: clean
 clean:
