@@ -3,7 +3,7 @@
 * simplify grammar
 * rigid output format(html absolute position)
 
-formular_translator support two kind of input mathods:
+formular_translator support two kinds of input method:
 
 1. read the formula code from stdin with a 
 2. specify the formula file path as a parameter of main function
