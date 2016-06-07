@@ -9,14 +9,25 @@ void TokenDFA::Init() {
 	link.clear();
 }
 
-void TokenDFA::InsertRule(int state1, int state2, char ch) {
-	totalState = std::max(totalState, std::max(state1 + 1, state2 + 1));
-	link.resize(totalState);
-	if (link[state1].count(ch)) {
-		std::cout << "Collisional rules in TokenDFA." << std::endl;
-		exit(-1);
+int TokenDFA::InsertRule(int state1, int state2, char ch) {
+	if (!link.count(state1)
+		|| !link[state1].count(ch)) {
+		// 1. no such state found before
+		//    must be no error
+		// 2. state found before (previous condition false)
+		//    and no such rule
+		link[state1][ch] = state2;
+		return SUCC;
 	}
-	link[state1][ch] = state2;
+	// duplicated rule just ignore
+	if (link[state1][ch] == state2) {
+		return SUCC;
+	}
+	// collision detected
+	std::cout << "Collisional rules in TokenDFA." << std::endl;
+	std::cout << state1 << "--(" << ch << ")-->" << state2 << std::endl;
+	std::cout << std::endl;
+	return COLLIDE_RULE;
 }
 
 int TokenDFA::Next(char ch) {

@@ -15,6 +15,9 @@
 #define INVALID_TOKEN	0103
 #define END_OF_FILE		0104
 #define DRVT_TERMINATED	0105
+#define COLLIDE_RULE	0106
+#define NO_FORMULA_FILE	0107
+#define LOG_FILE_FAIL	0110
 
 //[1000, 2000) token name
 #define INTEGRITY		1000
