@@ -13,5 +13,5 @@
 # debug output
 */output/*.out
 
-# ignore report 
-report/*
+# ignore debug files
+*/log/*

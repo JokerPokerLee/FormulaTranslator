@@ -2,7 +2,7 @@
 #include "source.h"
 #include "grammar.h"
 
-void Grammar::Init(const char* grammarInput, const char* mapInput) {
+int Grammar::Init(const char* grammarInput, const char* mapInput) {
 	derivationNumber = 0;
 	derivation.clear();
 	FILE* fp = fopen(grammarInput, "r");
@@ -53,8 +53,13 @@ void Grammar::Init(const char* grammarInput, const char* mapInput) {
 	fclose(fp);
 
 	// output all the derivation uesd in process
-	debugOutStream.open("../output/derivation.out");
+	debugOutStream.open("../log/derivation.out");
+	if (debugOutStream.fail()) {
+		std::cout << "Can't not open Project/log/derivation.out file.\n" << std::endl;
+		return LOG_FILE_FAIL;
+	}
 	debugOutStream << "Left most derivation:" << std::endl;
+	return SUCC;
 }
 
 int Grammar::FetchSign(int k, unsigned int i) {
