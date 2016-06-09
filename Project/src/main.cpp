@@ -31,15 +31,13 @@ int main(int argc, char* argv[]) {
 	std::cout << "Start initializing lexical analyzer." << std::endl;
 	LexicalAnalyzer lexicalAnalyzer;
 	lexicalAnalyzer.Init("../input/rule.in", formulaInputFile, logMesgFile);
-	std::cout << "Lexical analyzer initialization complete.\n" << std::endl;
-
-	std::cout << "The tokens read in will be recorded in \"output/token.out\"." << std::endl;
+	std::cout << "Lexical analyzer initialization complete." << std::endl;
+	std::cout << "The tokens read in will be recorded in \"" << logMesgFile << "\".\n" << std::endl;
 
 	std::cout << "Start initializing syntax analyzer." << std::endl;
 	SyntaxAnalyzer syntaxAnalyzer;
 	syntaxAnalyzer.Init("../input/sentence.in", "../input/map.in", "../input/LLTable.in", logMesgFile);
-	std::cout << "Syntax analyzer initialization complete.\n" << std::endl;
-	
+	std::cout << "Syntax analyzer initialization complete." << std::endl;
 	std::cout << "The derivations used will be recorded in \"" << logMesgFile << "\".\n" << std::endl;
 
 	std::cout << "Start initializing html printer." << std::endl;

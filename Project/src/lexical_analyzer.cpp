@@ -16,13 +16,14 @@ int LexicalAnalyzer::Init(const char* ruleInput, char* formulaInputFile, std::st
 	logMesgFile = std::string("Project/log/token.out");
 	debugOutStream.open("../log/token.out");
 	if (debugOutStream.fail()) {
-		std::cout << "Can't not open Project/log/token.out file." << std::endl;
-		std::cout << "Simply output the token identified from input stream in the current directory.\n" << std::endl;
-		debugOutStream.open("./token.out");
+		std::cout << "***Can't not open Project/log/token.out file." << std::endl;
+		std::cout << "***Simply output the token identified from input stream in the current directory." << std::endl;
 		logMesgFile = std::string("./token.out");
+		debugOutStream.open("./token.out");
 		return LOG_FILE_FAIL;
+	} else {
+		return SUCC;
 	}
-	return SUCC;
 }
 
 void LexicalAnalyzer::BuildTokenDFA(std::string fileName) {
