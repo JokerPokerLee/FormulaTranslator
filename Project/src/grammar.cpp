@@ -55,7 +55,10 @@ int Grammar::Init(const char* grammarInput, const char* mapInput) {
 	// output all the derivation uesd in process
 	debugOutStream.open("../log/derivation.out");
 	if (debugOutStream.fail()) {
-		std::cout << "Can't not open Project/log/derivation.out file.\n" << std::endl;
+		std::cout << "Can't not open Project/log/derivation.out file." << std::endl;
+		std::cout << "Simply output the derivation info in the current directory.\n" << std::endl;
+		debugOutStream.open("./derivation.out");
+		debugOutStream << "Left most derivation:" << std::endl;
 		return LOG_FILE_FAIL;
 	}
 	debugOutStream << "Left most derivation:" << std::endl;

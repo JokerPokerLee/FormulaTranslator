@@ -5,6 +5,9 @@
 void LLTable::Init(const char* LLTableInput) {
 	// read in LL table
 	FILE* fp = fopen(LLTableInput, "r");
+	if (fp == NULL) {
+		// File ERROR
+	}
 	int mark, token, derivation;
 	while (fscanf(fp, "%d %d %d", &mark, &token, &derivation) != EOF) {
 		std::pair<int , int> mtp = std::make_pair(mark, token);

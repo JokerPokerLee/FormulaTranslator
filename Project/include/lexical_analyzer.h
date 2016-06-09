@@ -17,7 +17,7 @@ private:
 	std::ofstream debugOutStream;
 public:
 	// initialize lexical analyzer
-	int Init(const char* ruleInput, char* formulaInput);
+	int Init(const char* ruleInput, char* formulaInput, std::string& logMesgFile);
 	// build DFA from DFA rule file
 	void BuildTokenDFA(std::string fileName);
 	// start from the start state in DFA

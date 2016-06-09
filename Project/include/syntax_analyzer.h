@@ -44,7 +44,7 @@ private:
 	// record if last token printed is ID
 	bool isLastID;
 public:
-	void Init(const char* grammarInput, const char* mapInput, const char* LLTableInput);
+	int Init(const char* grammarInput, const char* mapInput, const char* LLTableInput, std::string& logMesgFile);
 	int MatchToken(int token, std::string& lexname);
 	void AssignLexname(std::string lexname);
 	void DetermineDepth(Node* node);

@@ -9,13 +9,19 @@
 static std::string leftCurly = std::string("(");
 static std::string rightCurly = std::string(")");
 
-void SyntaxAnalyzer::Init(const char* grammarInput, const char* mapInput, const char* LLTableInput) {
-	grammar.Init(grammarInput, mapInput);
+int SyntaxAnalyzer::Init(const char* grammarInput, const char* mapInput, const char* LLTableInput, std::string& logMesgFile) {
+	int rtn;
+	logMesgFile = std::string("Project/log/derivation.out");
+	rtn = grammar.Init(grammarInput, mapInput);
+	if (rtn == LOG_FILE_FAIL) {
+		logMesgFile = std::string("./derivation.out");
+	}
 	table.Init(LLTableInput);
 	// first derivation
 	grammar.Print(1);
 	mCurrentNode = root = new Node(1, NULL);
 	isLastID = false;
+	return rtn;
 }
 
 // read in token and decide to derivate or move on

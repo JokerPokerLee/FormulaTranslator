@@ -26,22 +26,25 @@ int main(int argc, char* argv[]) {
 		formulaInputFile = argv[1];
 	}
 
+	std::string logMesgFile;
+
 	std::cout << "Start initializing lexical analyzer." << std::endl;
 	LexicalAnalyzer lexicalAnalyzer;
-	lexicalAnalyzer.Init("../input/rule.in", formulaInputFile);
+	lexicalAnalyzer.Init("../input/rule.in", formulaInputFile, logMesgFile);
 	std::cout << "Lexical analyzer initialization complete.\n" << std::endl;
+
+	std::cout << "The tokens read in will be recorded in \"output/token.out\"." << std::endl;
 
 	std::cout << "Start initializing syntax analyzer." << std::endl;
 	SyntaxAnalyzer syntaxAnalyzer;
-	syntaxAnalyzer.Init("../input/sentence.in", "../input/map.in", "../input/LLTable.in");
+	syntaxAnalyzer.Init("../input/sentence.in", "../input/map.in", "../input/LLTable.in", logMesgFile);
 	std::cout << "Syntax analyzer initialization complete.\n" << std::endl;
+	
+	std::cout << "The derivations used will be recorded in \"" << logMesgFile << "\".\n" << std::endl;
 
 	std::cout << "Start initializing html printer." << std::endl;
 	HtmlPrinter::Init("../output/result.html");
 	std::cout << "Html printer initialization complete.\n" << std::endl;
-
-	std::cout << "The tokens read in will be recorded in \"output/token.out\"." << std::endl;
-	std::cout << "The derivations used will be recorded in \"output/derivation.out\".\n" << std::endl;
 
 	std::cout << "Bind formula string to error reporter." << std::endl;
 	ErrorReporter::Init(lexicalAnalyzer.FormulaPointer());
