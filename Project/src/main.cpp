@@ -105,7 +105,7 @@ int main(int argc, char* argv[]) {
 	std::cout << "Start printing formula." << std::endl;
 	syntaxAnalyzer.Print();
 	HtmlPrinter::Finish();
-	std::cout << "The result has been written in \"output/result.html\".\n" << std::endl;
+	std::cout << "The result has been written in \"Project/output/result.html\".\n" << std::endl;
 
 	std::cout << "Formula translation complete." << std::endl;
 	return 0;
