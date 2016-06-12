@@ -1,4 +1,5 @@
 # link file
+*.o
 */lib/
 
 # executable file
@@ -15,3 +16,8 @@
 
 # ignore debug files
 */log/*
+
+# ignore package
+*.zip
+*.tgz
+*.rar
