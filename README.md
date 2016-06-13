@@ -34,6 +34,6 @@ The source file may be out dated cause it will not be updated everytime some bug
 
 ### ***ATTENTION***
 
-The file should be remain unchanged, especially the ```input/```, ```output/``` and ```bin/``` directories.
-If those three directories were changed or removed, the program may not function and break down.
-The file path error detection is to be done.
+***The file should be remain unchanged, especially the ```input/```, ```output/``` and ```bin/``` directories.***
+***If those three directories were changed or removed, the program may not function and break down.***
+***The file path error detection is to be done.***
