@@ -5,7 +5,7 @@
 
 formular_translator support two kinds of input method:
 
-1. read the formula code from stdin with a 
+1. read the formula code from stdin with a '#' at the end
 2. specify the formula file path as a parameter of main function
 
 ----------------------------------------------------------------
@@ -17,9 +17,10 @@ Use one command to build the project:
 ```bash
 $ bash run.sh
 ```
-This command compile the sources(which are needed), and execute the program.
+This command compile the source code, and execute the program.
 
 The default input stream is set to the file: ```Project/input/formula.in```.
+When using the bash command above, the program use the default input stream.
 If the formula will be inputted when running the program,
 run the command ```./bin/formula_translator```(assuming that the current directory is Project/).
 
@@ -34,6 +35,6 @@ The source file may be out dated cause it will not be updated everytime some bug
 
 ### ***ATTENTION***
 
-***The file should be remain unchanged, especially the ```input/```, ```output/``` and ```bin/``` directories.***
+***The file structure should be remain unchanged, especially the ```input/```, ```output/``` and ```bin/``` directories.***
 ***If those three directories were changed or removed, the program may not function and break down.***
 ***The file path error detection is to be done.***
